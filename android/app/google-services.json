@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "708405971969",
+    "firebase_url": "https://senior-design-862c5.firebaseio.com",
+    "project_id": "senior-design-862c5",
+    "storage_bucket": "senior-design-862c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:708405971969:android:ec4ae3821b9f1d814f0400",
+        "android_client_info": {
+          "package_name": "co.gustavoortegajimenez.flash_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "708405971969-guftkcv6eu4irurv67f1cfu5oa3qpfs1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWkvCJZX6okO0NDxlfk3By5vHgbS6QdbQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "708405971969-guftkcv6eu4irurv67f1cfu5oa3qpfs1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
