@@ -3,6 +3,7 @@ import 'package:spot_hot/screens/login_screen.dart';
 import 'package:spot_hot/screens/registration_screen.dart';
 import 'package:spot_hot/components/rounded_button.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'home.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const id = "welcome_screen";
@@ -57,7 +58,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   ),
                 ),
                 Text(
-                  'Flash Chat',
+                  'Spot Hot',
                   style: TextStyle(
                     fontSize: 45.0,
                     fontWeight: FontWeight.w900,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class Home extends StatefulWidget {
-  static const id = "home_screen";
+  static const id = "home";
   @override
   _HomeState createState() => _HomeState();
 }
@@ -16,10 +16,10 @@ class _HomeState extends State<Home> {
       'Index 0: Home',
     ),
     Text(
-      'Index 1: Business',
+      'Index 1: Search',
     ),
     Text(
-      'Index 2: School',
+      'Index 2: Profile',
     ),
   ];
 
@@ -45,11 +45,14 @@ class _HomeState extends State<Home> {
         title: Text('SpotHot'),
         backgroundColor: Colors.lightBlueAccent,
       ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
           BottomNavigationBarItem(
-              icon: Icon(Icons.business), title: Text('Business')),
+              icon: Icon(Icons.search), title: Text('Search')),
           BottomNavigationBarItem(
               icon: Icon(Icons.person), title: Text('Profile')),
         ],

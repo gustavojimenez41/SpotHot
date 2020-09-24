@@ -3,10 +3,11 @@ import 'package:spot_hot/screens/welcome_screen.dart';
 import 'package:spot_hot/screens/login_screen.dart';
 import 'package:spot_hot/screens/registration_screen.dart';
 import 'package:spot_hot/screens/chat_screen.dart';
+import 'package:spot_hot/screens/home.dart';
 
-void main() => runApp(FlashChat());
+void main() => runApp(SpotHot());
 
-class FlashChat extends StatelessWidget {
+class SpotHot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,6 +17,7 @@ class FlashChat extends StatelessWidget {
         LoginScreen.id: (context) => LoginScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),
         ChatScreen.id: (context) => ChatScreen(),
+        Home.id: (context) => Home()
       },
     );
   }
