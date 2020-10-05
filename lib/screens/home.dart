@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'maps.dart';
 
 class Home extends StatefulWidget {
   static const id = "home";
@@ -11,10 +12,8 @@ class _HomeState extends State<Home> {
   int _selectedIndex = 0;
   final _auth = auth.FirebaseAuth.instance;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-    ),
+  final List<Widget> _widgetOptions = [
+    MapsPage(),
     Text(
       'Index 1: Search',
     ),
