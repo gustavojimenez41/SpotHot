@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'maps.dart';
+import 'profile.dart';
 
 class Home extends StatefulWidget {
   static const id = "home";
@@ -17,9 +18,7 @@ class _HomeState extends State<Home> {
     Text(
       'Index 1: Search',
     ),
-    Text(
-      'Index 2: Profile',
-    ),
+    Profile(),
   ];
 
   void _onItemTapped(int index) {
