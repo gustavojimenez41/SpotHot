@@ -13,9 +13,6 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final _auth = auth.FirebaseAuth.instance;
   String _fullname = "John Doe";
-  String _bio = "This bio is about me";
-  String _followers = "0";
-  String _following = "0";
   String _posts = "0";
 
   Widget _buildCoverImage(Size screenSize) {
@@ -208,7 +205,6 @@ class _ProfileState extends State<Profile> {
           Size screenSize = MediaQuery.of(context).size;
           if (snapshot.connectionState == ConnectionState.done) {
             User currentUser = snapshot.data;
-            print(currentUser.uuid);
             return Scaffold(
               body: Stack(
                 children: [
@@ -254,20 +250,4 @@ class _ProfileState extends State<Profile> {
           }
         });
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return FutureBuilder(
-  //     future: getUserByUUID(_auth.currentUser.uid),
-  //     builder: (context, snapshot) {
-  //       if (snapshot.connectionState == ConnectionState.done) {
-  //         User b = snapshot.data;
-  //         print(b.uuid);
-  //         return Text('bleh');
-  //       } else {
-  //         return CircularProgressIndicator();
-  //       }
-  //     },
-  //   );
-  // }
 }
