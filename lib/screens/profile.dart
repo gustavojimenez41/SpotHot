@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:spot_hot/models/user.dart';
+import 'package:spot_hot/proxy/firestore_proxy.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'newpost.dart';
 
 class Profile extends StatefulWidget {
@@ -9,10 +11,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final _auth = auth.FirebaseAuth.instance;
   String _fullname = "John Doe";
-  String _bio = "This bio is about me";
-  String _followers = "0";
-  String _following = "0";
   String _posts = "0";
 
   Widget _buildCoverImage(Size screenSize) {
@@ -46,21 +46,22 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildFullName() {
+  Widget _buildFullName(User currentUser) {
     TextStyle _nameTextStyle = TextStyle(
       fontFamily: 'Roboto',
       color: Colors.black,
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
     );
-
+    String fname = currentUser.firstName;
+    String lname = currentUser.lastName;
     return Text(
-      _fullname,
+      '$fname $lname',
       style: _nameTextStyle,
     );
   }
 
-  Widget _buildBio(BuildContext context) {
+  Widget _buildBio(BuildContext context, User currentUser) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
       decoration: BoxDecoration(
@@ -68,7 +69,7 @@ class _ProfileState extends State<Profile> {
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: Text(
-        _bio,
+        currentUser.bio,
         style: TextStyle(
           fontFamily: 'Spectral',
           color: Colors.black,
@@ -107,7 +108,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildStatContainer() {
+  Widget _buildStatContainer(User currentUser) {
     return Container(
       height: 60.0,
       margin: EdgeInsets.only(top: 8.0),
@@ -117,8 +118,8 @@ class _ProfileState extends State<Profile> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          _buildStatItem("Following", _following),
-          _buildStatItem("Followers", _followers),
+          _buildStatItem("Following", currentUser.following.length.toString()),
+          _buildStatItem("Followers", currentUser.followers.length.toString()),
           _buildStatItem("Posts", _posts),
         ],
       ),
@@ -198,47 +199,55 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          _buildCoverImage(screenSize),
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
+    return FutureBuilder(
+        future: getUserByUUID(_auth.currentUser.uid),
+        builder: (context, snapshot) {
+          Size screenSize = MediaQuery.of(context).size;
+          if (snapshot.connectionState == ConnectionState.done) {
+            User currentUser = snapshot.data;
+            return Scaffold(
+              body: Stack(
                 children: [
-                  SizedBox(height: screenSize.height / 6.4),
-                  _buildProfileImage(),
-                  _buildFullName(),
-                  _buildBio(context),
-                  _buildStatContainer(),
-                  _buildConnectWithUser(context),
-                  _buildButtons(),
+                  _buildCoverImage(screenSize),
+                  SafeArea(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(height: screenSize.height / 6.4),
+                          _buildProfileImage(),
+                          _buildFullName(currentUser),
+                          _buildBio(context, currentUser),
+                          _buildStatContainer(currentUser),
+                          _buildConnectWithUser(context),
+                          _buildButtons(),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Handler to create a new post
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (BuildContext context) => SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: NewPost(),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  // Handler to create a new post
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) => SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom),
+                        child: NewPost(),
+                      ),
+                    ),
+                  );
+                },
+                child: Icon(Icons.create),
+                backgroundColor: Colors.lightBlueAccent,
               ),
-            ),
-          );
-        },
-        child: Icon(Icons.create),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
-    );
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 }
