@@ -10,5 +10,5 @@ class User {
   List<String> followers;
 
   User(this.firstName, this.lastName, this.bio, this.uuid, this.following,
-      this.followers) {}
+      this.followers);
 }

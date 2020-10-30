@@ -4,6 +4,7 @@ import 'package:spot_hot/screens/login_screen.dart';
 import 'package:spot_hot/screens/registration_screen.dart';
 import 'package:spot_hot/screens/chat_screen.dart';
 import 'package:spot_hot/screens/home.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() => runApp(SpotHot());
 
