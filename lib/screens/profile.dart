@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:spot_hot/models/user.dart';
 import 'package:spot_hot/proxy/firestore_proxy.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_image/firebase_image.dart';
+import 'edit_profile.dart';
 import 'newpost.dart';
 
 class Profile extends StatefulWidget {
@@ -27,14 +30,34 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Future<bool> userProfilePictureExists() async {
+    final snapShot = await FirebaseFirestore.instance
+        .collection('user_profile_picture/')
+        .doc(_auth.currentUser.uid)
+        .get();
+
+    if (snapShot == null || !snapShot.exists) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Widget _buildProfileImage() {
+    //pull the image from the storage using the user's id
+    //use the ternary operator if the path exists in firebase serve the image if not use the default profile image.
+
     return Center(
       child: Container(
         width: 140.0,
         height: 140.0,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/defaultprofile.png'),
+            image: userProfilePictureExists() != null
+                ? FirebaseImage(
+                    'gs://senior-design-862c5.appspot.com/user_profile_picture/${_auth.currentUser.uid}',
+                    shouldCache: true)
+                : AssetImage('images/defaultprofile.png'),
           ),
           borderRadius: BorderRadius.circular(80.0),
           border: Border.all(
@@ -55,6 +78,7 @@ class _ProfileState extends State<Profile> {
     );
     String fname = currentUser.firstName;
     String lname = currentUser.lastName;
+    _fullname = "$fname $lname";
     return Text(
       '$fname $lname',
       style: _nameTextStyle,
@@ -123,6 +147,25 @@ class _ProfileState extends State<Profile> {
           _buildStatItem("Posts", _posts),
         ],
       ),
+    );
+  }
+
+  Widget _buildEditProfile() {
+    return OutlineButton(
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (BuildContext context) => SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: editProfile(),
+            ),
+          ),
+        );
+      },
+      child: Text('Edit Profile'),
     );
   }
 
@@ -218,6 +261,7 @@ class _ProfileState extends State<Profile> {
                           _buildFullName(currentUser),
                           _buildBio(context, currentUser),
                           _buildStatContainer(currentUser),
+                          _buildEditProfile(),
                           _buildConnectWithUser(context),
                           _buildButtons(),
                         ],
