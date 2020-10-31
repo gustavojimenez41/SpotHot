@@ -58,7 +58,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   ),
                 ),
                 Text(
-                  'Spot Hot',
+                  'pot Hot',
                   style: TextStyle(
                     fontSize: 45.0,
                     fontWeight: FontWeight.w900,
