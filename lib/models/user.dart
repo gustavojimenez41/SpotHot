@@ -8,7 +8,8 @@ class User {
   String uuid;
   List<String> following;
   List<String> followers;
+  String user_profile_picture;
 
   User(this.firstName, this.lastName, this.bio, this.uuid, this.following,
-      this.followers) {}
+      this.followers, this.user_profile_picture) {}
 }

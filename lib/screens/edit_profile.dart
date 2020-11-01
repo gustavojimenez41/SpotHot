@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
+import 'package:spot_hot/constants.dart';
 
 class editProfile extends StatefulWidget {
   @override
@@ -12,7 +13,6 @@ class editProfile extends StatefulWidget {
 }
 
 class _editProfileState extends State<editProfile> {
-  String ImageUrl;
   FirebaseAuth auth;
 
   @override
@@ -26,6 +26,14 @@ class _editProfileState extends State<editProfile> {
       return users
           .doc(userID)
           .update({'bio': bioText})
+          .then((value) => print("User Updated"))
+          .catchError((error) => print("Failed to update user: $error"));
+    }
+
+    Future<void> updateUserProfile(String userID, String profileUrl) {
+      return users
+          .doc(userID)
+          .update({'user_profile_picture': profileUrl})
           .then((value) => print("User Updated"))
           .catchError((error) => print("Failed to update user: $error"));
     }
@@ -58,7 +66,44 @@ class _editProfileState extends State<editProfile> {
               child: FlatButton(
                 color: Colors.grey,
                 textColor: Colors.white,
-                onPressed: () => uploadImage(),
+                onPressed: () async {
+                  final _storage = FirebaseStorage.instance;
+                  final _picker = ImagePicker();
+                  PickedFile image;
+
+                  await Permission.photos.request();
+
+                  var permissionStatus = await Permission.photos.status;
+
+                  if (permissionStatus.isGranted) {
+                    image = await _picker.getImage(source: ImageSource.gallery);
+                    File file = File(image.path);
+
+                    if (image != null) {
+                      //upload to firebase
+                      var snapshot = await _storage
+                          .ref()
+                          .child(
+                              'user_profile_picture/${file.hashCode}') //change this to be something else like the name of the file
+                          .putFile(file)
+                          .onComplete;
+
+                      //create the path for the user's profile storage
+                      String storagepath = StoragePath;
+                      var userprofileURL = await snapshot.ref.getPath();
+                      var pathURL = storagepath + userprofileURL;
+
+                      print("PATH url: $pathURL");
+
+                      updateUserProfile(auth.currentUser.uid, pathURL);
+                    } else {
+                      print('No path received!');
+                    }
+                  } else {
+                    print('Permissions not granted.');
+                  }
+                  Navigator.pop(context);
+                },
                 child: Text('upload'),
               ),
             ),
@@ -95,8 +140,6 @@ class _editProfileState extends State<editProfile> {
                     } catch (e) {
                       print(e);
                     }
-
-                    //Navigator.pop(context);
                   },
                   child: Text('Save')),
             )
@@ -104,42 +147,5 @@ class _editProfileState extends State<editProfile> {
         ),
       ),
     );
-  }
-
-  uploadImage() async {
-    final _storage = FirebaseStorage.instance;
-    final _picker = ImagePicker();
-    PickedFile image;
-
-    //check permissions
-    await Permission.photos.request();
-
-    var permissionStatus = await Permission.photos.status;
-
-    if (permissionStatus.isGranted) {
-      //proceed with picking image from device
-      //select image
-      image = await _picker.getImage(source: ImageSource.gallery);
-      var file = File(image.path);
-
-      if (image != null) {
-        //upload to firebase
-        var snapshot = await _storage
-            .ref()
-            .child('user_profile_picture/${auth.currentUser.uid}')
-            .putFile(file)
-            .onComplete;
-
-        var downloadURL = await snapshot.ref.getDownloadURL();
-
-        setState(() {
-          ImageUrl = downloadURL;
-        });
-      } else {
-        print('No path received!');
-      }
-    } else {
-      print('Permissions not granted.');
-    }
   }
 }

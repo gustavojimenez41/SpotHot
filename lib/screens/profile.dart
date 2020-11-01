@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:spot_hot/models/user.dart';
 import 'package:spot_hot/proxy/firestore_proxy.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
@@ -30,22 +31,10 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Future<bool> userProfilePictureExists() async {
-    final snapShot = await FirebaseFirestore.instance
-        .collection('user_profile_picture/')
-        .doc(_auth.currentUser.uid)
-        .get();
-
-    if (snapShot == null || !snapShot.exists) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  Widget _buildProfileImage() {
+  Widget _buildProfileImage(User currentUser) {
     //pull the image from the storage using the user's id
     //use the ternary operator if the path exists in firebase serve the image if not use the default profile image.
+    print('Users profile url: ${currentUser.user_profile_picture}');
 
     return Center(
       child: Container(
@@ -53,11 +42,8 @@ class _ProfileState extends State<Profile> {
         height: 140.0,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: userProfilePictureExists() != null
-                ? FirebaseImage(
-                    'gs://senior-design-862c5.appspot.com/user_profile_picture/${_auth.currentUser.uid}',
-                    shouldCache: true)
-                : AssetImage('images/defaultprofile.png'),
+            image: FirebaseImage(currentUser.user_profile_picture,
+                shouldCache: false),
           ),
           borderRadius: BorderRadius.circular(80.0),
           border: Border.all(
@@ -257,7 +243,7 @@ class _ProfileState extends State<Profile> {
                       child: Column(
                         children: [
                           SizedBox(height: screenSize.height / 6.4),
-                          _buildProfileImage(),
+                          _buildProfileImage(currentUser),
                           _buildFullName(currentUser),
                           _buildBio(context, currentUser),
                           _buildStatContainer(currentUser),

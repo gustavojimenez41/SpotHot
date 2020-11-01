@@ -15,6 +15,7 @@ Future<User> getUserByUUID(String uuid) async {
       userInfo['bio'],
       userInfo['uuid'],
       List<String>.from(userInfo['following']),
-      List<String>.from(userInfo['followers']));
+      List<String>.from(userInfo['followers']),
+      userInfo['user_profile_picture']);
   return user;
 }

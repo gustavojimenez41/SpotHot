@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+const defaultProfileImage =
+    'gs://senior-design-862c5.appspot.com/user_profile_picture/defaultprofile.png';
+
+const StoragePath = 'gs://senior-design-862c5.appspot.com/';
+
 const kSendButtonTextStyle = TextStyle(
   color: Colors.lightBlueAccent,
   fontWeight: FontWeight.bold,

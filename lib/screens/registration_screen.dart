@@ -41,6 +41,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             'followers': [],
             'following': [],
             'last_name': lastName,
+            'user_profile_picture': defaultProfileImage, //constant
             'username': userName,
             'uuid': userId
           })
