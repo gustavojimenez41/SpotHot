@@ -14,7 +14,7 @@ class _HomeState extends State<Home> {
   final _auth = auth.FirebaseAuth.instance;
 
   final List<Widget> _widgetOptions = [
-    MapsPage(),
+    MapSample(),
     Text(
       'Index 1: Search',
     ),
