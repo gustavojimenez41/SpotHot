@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:search_map_place/search_map_place.dart';
+import 'package:location/location.dart';
 
 class MapsPage extends StatelessWidget {
   @override
@@ -10,53 +10,48 @@ class MapsPage extends StatelessWidget {
 }
 
 class MapSample extends StatefulWidget {
+  MapSample();
   @override
   State createState() => MapSampleState();
 }
 
 class MapSampleState extends State<MapSample> {
   GoogleMapController mapController;
+  Location currentLocation = new Location();
+  String url;
+
+  //Getting the current location when user opens app
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+    currentLocation.onLocationChanged.listen((l) {
+      mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: LatLng(l.latitude, l.longitude), zoom: 15),
+        ),
+      );
+
+      String currentLat = l.latitude.toString();
+      String currentLon = l.longitude.toString();
+      url =
+          "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$currentLat,$currentLon&radius=1500&key=AIzaSyBUILBxCa5yyQZawAAOpD6HII48R3haimM";
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
-      body: Container(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SearchMapPlaceWidget(
-                hasClearButton: true,
-                placeType: PlaceType.address,
-                placeholder: 'Enter the location',
-                apiKey: 'AIzaSyBUILBxCa5yyQZawAAOpD6HII48R3haimM',
-                onSelected: (Place place) async {
-                  Geolocation geolocation = await place.geolocation;
-                  mapController.animateCamera(
-                      CameraUpdate.newLatLng(geolocation.coordinates));
-                  mapController.animateCamera(
-                      CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0),
-                child: SizedBox(
-                  height: 600.0,
-                  child: GoogleMap(
-                    onMapCreated: (GoogleMapController googleMapController) {
-                      setState(() {
-                        mapController = googleMapController;
-                      });
-                    },
-                    initialCameraPosition: CameraPosition(
-                        zoom: 15.0, target: LatLng(32.7297, -97.1129)),
-                    mapType: MapType.normal,
-                  ),
-                ),
-              ),
-            ],
+      body: Stack(
+        children: <Widget>[
+          GoogleMap(
+            initialCameraPosition:
+                CameraPosition(zoom: 15.0, target: LatLng(32.7297, -97.1129)),
+            mapType: MapType.normal,
+            onMapCreated: _onMapCreated,
+            myLocationEnabled: true,
           ),
-        ),
+        ],
       ),
     );
   }
