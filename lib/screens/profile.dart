@@ -72,7 +72,7 @@ class _ProfileState extends State<Profile> {
   Widget _buildFullName(User currentUser) {
     TextStyle _nameTextStyle = TextStyle(
       fontFamily: 'Roboto',
-      color: Colors.black,
+      color: Colors.white,
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
     );
@@ -96,7 +96,7 @@ class _ProfileState extends State<Profile> {
         currentUser.bio,
         style: TextStyle(
           fontFamily: 'Spectral',
-          color: Colors.black,
+          color: Colors.white,
           fontSize: 20.0,
           fontWeight: FontWeight.w300,
         ),
@@ -107,13 +107,13 @@ class _ProfileState extends State<Profile> {
   Widget _buildStatItem(String label, String count) {
     TextStyle _statLabelTextStyle = TextStyle(
       fontFamily: 'Roboto',
-      color: Colors.black,
+      color: Colors.white,
       fontSize: 16.0,
-      fontWeight: FontWeight.w200,
+      fontWeight: FontWeight.w300,
     );
 
     TextStyle _statCountTextStyle = TextStyle(
-      color: Colors.black54,
+      color: Colors.white,
       fontSize: 24.0,
       fontWeight: FontWeight.bold,
     );
@@ -136,8 +136,7 @@ class _ProfileState extends State<Profile> {
     return Container(
       height: 60.0,
       margin: EdgeInsets.only(top: 8.0),
-      decoration: BoxDecoration(
-        color: Color(0xFFEFF4F7),
+      decoration: BoxDecoration( border: Border(bottom: BorderSide(color: Color(0xFFFFBE8F),),),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -165,7 +164,8 @@ class _ProfileState extends State<Profile> {
           ),
         );
       },
-      child: Text('Edit Profile'),
+      child: Text('Edit Profile',
+      style: TextStyle(color: Colors.white),),
     );
   }
 
@@ -183,8 +183,8 @@ class _ProfileState extends State<Profile> {
               child: Container(
                 height: 40.0,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.lightBlueAccent.shade200),
-                  color: Colors.lightBlueAccent,
+                  border: Border.all(color: Color(0xFFFFBE8F)),
+                  color: Color(0xFFFFBE8F),
                 ),
                 child: Center(
                   child: Text(
@@ -212,7 +212,8 @@ class _ProfileState extends State<Profile> {
                     padding: EdgeInsets.all(10.0),
                     child: Text(
                       "Message",
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                      style: TextStyle(fontWeight: FontWeight.w600,
+                      color: Colors.white),
                     ),
                   ),
                 ),
@@ -233,6 +234,7 @@ class _ProfileState extends State<Profile> {
         style: TextStyle(
           fontFamily: 'Roboto',
           fontSize: 16.0,
+          color: Colors.white
         ),
       ),
     );
@@ -286,7 +288,7 @@ class _ProfileState extends State<Profile> {
                   );
                 },
                 child: Icon(Icons.create),
-                backgroundColor: Colors.lightBlueAccent,
+                backgroundColor: Color(0xFFFFBE8F),
               ),
             );
           } else {

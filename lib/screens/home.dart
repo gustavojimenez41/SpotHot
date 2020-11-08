@@ -29,34 +29,40 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                _auth.signOut();
-                Navigator.pop(context);
-              }),
-        ],
-        title: Text('SpotHot'),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.search), title: Text('Search')),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person), title: Text('Profile')),
-        ],
-        selectedItemColor: Colors.amber[800],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: null,
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  _auth.signOut();
+                  Navigator.pop(context);
+                }),
+          ],
+          title: Text('SpotHot'),
+          backgroundColor: Color(0xFF935252),
+        ),
+        body: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home'),),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.search), title: Text('Search')),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person), title: Text('Profile')),
+          ],
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Color(0xFF935252),
+          backgroundColor: Color(0xFFFFBE8F),
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }

@@ -19,6 +19,9 @@ class SpotHot extends StatelessWidget {
         ChatScreen.id: (context) => ChatScreen(),
         Home.id: (context) => Home()
       },
+      theme: ThemeData(
+        scaffoldBackgroundColor: Color(0xFF935252),
+      ),
     );
   }
 }

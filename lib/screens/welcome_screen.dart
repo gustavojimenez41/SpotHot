@@ -41,44 +41,45 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Hero(
-                  tag: "lightning",
-                  child: Container(
-                    child: Image.asset('images/logo.png'),
-                    height: 60.0,
-                  ),
+            Flexible(
+              child: Hero(
+                tag: "lightning",
+                child: Container(
+                  child: Image.asset('images/logo.png'),
+                  height: 200.0,
                 ),
-                Text(
-                  'pot Hot',
-                  style: TextStyle(
-                    fontSize: 45.0,
+              ),
+            ),
+            Center(
+              child: Text(
+                'Spot Hot',
+                style: TextStyle(
+                    fontSize: 70,
                     fontWeight: FontWeight.w900,
-                  ),
+                    fontFamily: 'BarlowCondensed',
+                    color: Colors.white
                 ),
-              ],
+              ),
             ),
             SizedBox(
               height: 48.0,
             ),
             RoundedButton(
               title: "Log in",
-              color: Colors.lightBlueAccent,
+              color: Color(0xFFFFBE8F),
               onPressed: () {
                 Navigator.pushNamed(context, LoginScreen.id);
               },
             ),
             RoundedButton(
               title: "Register",
-              color: Colors.blueAccent,
+              color: Color(0xFFFFBE6f),
               onPressed: () {
                 Navigator.pushNamed(context, RegistrationScreen.id);
               },

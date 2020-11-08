@@ -35,7 +35,7 @@ class _editProfileState extends State<editProfile> {
       child: Container(
         padding: EdgeInsets.all(20.0),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFF935252),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0),
@@ -49,7 +49,7 @@ class _editProfileState extends State<editProfile> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 30.0,
-                color: Colors.lightBlueAccent,
+                color: Color(0xFFFFBE8F),
               ),
             ),
             Padding(
@@ -67,12 +67,28 @@ class _editProfileState extends State<editProfile> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 30.0,
-                color: Colors.lightBlueAccent,
+                color: Color(0xFFFFBE8F),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 35.0, right: 35.0),
               child: TextField(
+                style: TextStyle(color: Colors.white),
+                cursorColor: Color(0xFFFFBE8F),
+                decoration: InputDecoration(
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFFFFBE8F),
+                    ),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFFFFBE8F),
+                    ),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFFFFBE8F))),
+                ),
                 autofocus: true,
                 textAlign: TextAlign.center,
                 onChanged: (newText) {
@@ -84,7 +100,7 @@ class _editProfileState extends State<editProfile> {
               padding:
                   const EdgeInsets.only(top: 15.0, right: 75.0, left: 75.0),
               child: FlatButton(
-                  color: Colors.lightBlueAccent,
+                  color: Color(0xFFFFBE8F),
                   textColor: Colors.white,
                   onPressed: () async {
                     //save the bio text

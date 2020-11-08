@@ -3,6 +3,7 @@ import 'package:spot_hot/components/rounded_button.dart';
 import 'package:spot_hot/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:spot_hot/screens/welcome_screen.dart';
 import 'home.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -20,7 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
@@ -33,8 +33,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Hero(
                   tag: "lightning",
                   child: Container(
-                    height: 200.0,
                     child: Image.asset('images/logo.png'),
+                    height: 200.0,
+                  ),
+                ),
+              ),
+              Center(
+                child: Text(
+                  'Spot Hot',
+                  style: TextStyle(
+                      fontSize: 70,
+                      fontWeight: FontWeight.w900,
+                      fontFamily: 'BarlowCondensed',
+                      color: Colors.white
                   ),
                 ),
               ),
@@ -44,6 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                   keyboardType: TextInputType.emailAddress,
                   textAlign: TextAlign.center,
+                  cursorColor: Color(0xFFFFBE8F),
+                  style: TextStyle(color: Colors.white),
                   onChanged: (value) {
                     email = value;
                   },
@@ -55,6 +68,8 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                   obscureText: true,
                   textAlign: TextAlign.center,
+                  cursorColor: Color(0xFFFFBE8F),
+                  style: TextStyle(color: Colors.white),
                   onChanged: (value) {
                     password = value;
                     //Do something with the user input.
@@ -66,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               RoundedButton(
                 title: "Log In",
-                color: Colors.lightBlueAccent,
+                color: Color(0xFFFFBE8F),
                 onPressed: () async {
                   setState(() {
                     showSpinner = true;
@@ -75,8 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     final newUser = await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
                     if (newUser != null) {
-//                      Navigator.pushNamed(context, ChatScreen.id);
-                      Navigator.pushNamed(context, Home.id);
+                    Navigator.pushReplacementNamed(context, Home.id);
                     }
                     setState(() {
                       showSpinner = false;
