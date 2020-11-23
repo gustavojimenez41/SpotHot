@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:spot_hot/models/user.dart';
+import 'package:spot_hot/models/property.dart';
 
 Future<User> getUserByUUID(String uuid) async {
   final _firestore = firestore.FirebaseFirestore.instance;
@@ -17,4 +18,21 @@ Future<User> getUserByUUID(String uuid) async {
       List<String>.from(userInfo['following']),
       List<String>.from(userInfo['followers']));
   return user;
+}
+
+Future<List<Property>> getNearestProperties() async {
+  //currently mock db call
+  List<Property> ans = [];
+  Property prop =
+      Property("Chamoy", PropertyType.foodAndDrinks, 35.11, 42.11, [], []);
+  ans.add(prop);
+  ans.add(prop);
+  ans.add(prop);
+  ans.add(prop);
+  ans.add(prop);
+  ans.add(prop);
+  ans.add(prop);
+  ans.add(prop);
+  ans.add(prop);
+  return ans;
 }
