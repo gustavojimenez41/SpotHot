@@ -17,7 +17,7 @@ class SpotHot extends StatelessWidget {
         LoginScreen.id: (context) => LoginScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),
         ChatScreen.id: (context) => ChatScreen(),
-        Home.id: (context) => Home()
+        Home.id: (context) => Home(),
       },
     );
   }
