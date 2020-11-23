@@ -43,6 +43,8 @@ dev_dependencies:
   flushbar: ^1.10.4
   permission_handler: ^5.0.1+1
   firebase_image: ^0.2.0
+  path: ^1.7.0
+  provider: ^4.3.2+2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

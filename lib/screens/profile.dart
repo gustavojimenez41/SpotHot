@@ -7,7 +7,12 @@ import 'package:spot_hot/proxy/firestore_proxy.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_image/firebase_image.dart';
 import 'edit_profile.dart';
-import 'newpost.dart';
+import 'new_post.dart';
+import 'package:spot_hot/components/post_tile.dart';
+
+final _firestore = FirebaseFirestore.instance;
+User currentUser;
+int totalPosts = 0;
 
 class Profile extends StatefulWidget {
   @override
@@ -17,19 +22,6 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final _auth = auth.FirebaseAuth.instance;
   String _fullname = "John Doe";
-  String _posts = "0";
-
-  Widget _buildCoverImage(Size screenSize) {
-    return Container(
-      height: screenSize.height / 3.3,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('images/defaultwallpaper.jpg'),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
 
   Widget _buildProfileImage(User currentUser) {
     //pull the image from the storage using the user's id
@@ -130,7 +122,7 @@ class _ProfileState extends State<Profile> {
         children: <Widget>[
           _buildStatItem("Following", currentUser.following.length.toString()),
           _buildStatItem("Followers", currentUser.followers.length.toString()),
-          _buildStatItem("Posts", _posts),
+          _buildStatItem("Posts", totalPosts.toString()),
         ],
       ),
     );
@@ -224,8 +216,6 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  //14:20
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -233,16 +223,16 @@ class _ProfileState extends State<Profile> {
         builder: (context, snapshot) {
           Size screenSize = MediaQuery.of(context).size;
           if (snapshot.connectionState == ConnectionState.done) {
-            User currentUser = snapshot.data;
+            currentUser = snapshot.data;
             return Scaffold(
               body: Stack(
                 children: [
-                  _buildCoverImage(screenSize),
+                  //_buildCoverImage(screenSize),
                   SafeArea(
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          SizedBox(height: screenSize.height / 6.4),
+                          //SizedBox(height: screenSize.height / 6.4),
                           _buildProfileImage(currentUser),
                           _buildFullName(currentUser),
                           _buildBio(context, currentUser),
@@ -250,6 +240,7 @@ class _ProfileState extends State<Profile> {
                           _buildEditProfile(),
                           _buildConnectWithUser(context),
                           _buildButtons(),
+                          UserPostStream(),
                         ],
                       ),
                     ),
@@ -279,5 +270,73 @@ class _ProfileState extends State<Profile> {
             return CircularProgressIndicator();
           }
         });
+  }
+}
+
+class UserPostStream extends StatefulWidget {
+  @override
+  _UserPostStreamState createState() => _UserPostStreamState();
+}
+
+class _UserPostStreamState extends State<UserPostStream> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('user_posts').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.lightBlueAccent,
+            ),
+          );
+        } else {
+          List<PostTile> userPosts = [];
+          int currentUserPosts = 0;
+
+          //get all the posts - iterate and only get the ones that contain the user's id
+          var posts = snapshot.data.documents.reversed;
+
+          for (var post in posts) {
+            final user_id = post.get('user_id');
+
+            //get all the posts created by the current logged on user
+            if (user_id == currentUser.uuid) {
+              print(
+                  "obtained post with user_id: ${post.get('user_id')} date: ${post.get('date')},"
+                  " desc: ${post.get('description')}, image: ${post.get('image')}");
+              print("The id is: ${post.id}");
+
+              //create a postTile with the user's info
+              final pTile = PostTile(
+                postCreator: currentUser,
+                postDescription: post.get('description'),
+                postImageLocation: post.get('image'),
+                documentId: post.id,
+                favs: post.get('likes'),
+                //comments: post.get('comments'),
+              );
+
+              //append the postTile to the list of userPosts
+              userPosts.add(pTile);
+
+              //increment the amount of user posts for the current user
+              currentUserPosts++;
+            }
+          }
+          print("Total user posts: ${userPosts.length}");
+
+          totalPosts = currentUserPosts;
+
+          return ListView(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            children: userPosts,
+            shrinkWrap: true,
+            physics: ScrollPhysics(),
+            reverse: true,
+          );
+        }
+      },
+    );
   }
 }
