@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spot_hot/models/property.dart';
+import 'property_screen.dart';
 import 'package:spot_hot/proxy/firestore_proxy.dart' as firestore_proxy;
 
 class PropertyCard extends StatelessWidget {
@@ -43,7 +44,9 @@ class PropertyCard extends StatelessWidget {
               children: <Widget>[
                 TextButton(
                   child: const Text('MORE INFO'),
-                  onPressed: () {/* ... */},
+                  onPressed: () {
+                    Navigator.pushNamed(context, PropertyScreen.id);
+                  },
                 ),
               ],
             ),

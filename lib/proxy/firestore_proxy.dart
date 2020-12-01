@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
+import 'package:spot_hot/models/comment.dart';
 import 'package:spot_hot/models/user.dart';
 import 'package:spot_hot/models/property.dart';
 
@@ -38,4 +39,14 @@ Future<List<Property>> getNearestProperties() async {
   ans.add(prop);
   ans.add(prop);
   return ans;
+}
+
+Future<List<Comment>> getCommentsOnProperty() async {
+  List<Comment> allComments = [];
+  for (int i = 0; i < 3; i++) {
+    Comment curComment = Comment("stavo41",
+        "I have been here $i time(s)! This place is great!", DateTime.now(), 4);
+    allComments.add(curComment);
+  }
+  return allComments;
 }
