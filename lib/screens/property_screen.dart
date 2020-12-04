@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:spot_hot/models/comment.dart';
 import 'package:spot_hot/proxy/firestore_proxy.dart';
+import 'package:spot_hot/components/comment_tile.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:spot_hot/models/user.dart';
+
+User currentUser;
 
 class PropertyScreen extends StatefulWidget {
   static const id = "property_screen";
@@ -10,7 +15,39 @@ class PropertyScreen extends StatefulWidget {
 }
 
 class _PropertyScreenState extends State<PropertyScreen> {
-  List<Comment> allComments;
+  final _auth = auth.FirebaseAuth.instance;
+  Widget allComments;
+
+  Future<Widget> buildCommentList() async {
+    List<CommentTile> commentThread = [];
+    List<Map> comments = [];
+    currentUser = await getUserByUUID(_auth.currentUser.uid);
+
+    for (var comment in comments) {
+      var commentData = {};
+      commentData = comment;
+      String commentUserId = commentData.keys.first;
+      String userComment = commentData.values.first;
+
+      //get the create a user object with the user's uid
+
+      //create a comment tile
+      final cTile =
+          CommentTile(commentCreator: currentUser, comment: userComment);
+
+      commentThread.add(cTile);
+    }
+
+    //then create a list view and return it to the screen
+    return ListView(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      children: commentThread,
+      shrinkWrap: true,
+      physics: ScrollPhysics(),
+      reverse: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> bleh = [
@@ -31,7 +68,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
       fontWeight: FontWeight.w700,
     );
     return FutureBuilder(
-        future: getCommentsOnProperty(),
+        future: buildCommentList(),
         builder: (context, snapshot) {
           Size screenSize = MediaQuery.of(context).size;
           if (snapshot.connectionState == ConnectionState.done) {
@@ -83,12 +120,9 @@ class _PropertyScreenState extends State<PropertyScreen> {
                 thickness: 2,
                 indent: 25,
                 endIndent: 25,
-              )
+              ),
             ];
-            for (Comment com in allComments) {
-              Text comText = Text('${com.value}');
-              columnValues.add(comText);
-            }
+            columnValues.add(allComments);
             return Scaffold(
               backgroundColor: Colors.white,
               body: SafeArea(

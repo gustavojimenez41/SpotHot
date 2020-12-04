@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:spot_hot/models/user.dart';
 import 'package:firebase_image/firebase_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:spot_hot/proxy/firestore_proxy.dart';
 import 'package:spot_hot/screens/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:spot_hot/components/comment_tile.dart';
@@ -55,28 +56,6 @@ class _PostTileState extends State<PostTile> {
   //get the post information from the database
 
   //add an event for touching the chat icon and the heart icon
-
-  //method to like post - adds the user's id to the liked posts array. Increments the count.
-  Future<void> likePost() {
-    return posts
-        .doc(widget.documentId)
-        .update({
-          'likes': FieldValue.arrayUnion([widget.postCreator.uuid])
-        })
-        .then((value) => print("post liked!"))
-        .catchError((error) => print("Failed to like post: $error"));
-  }
-
-  //method to unlike post - removes the user's id to the liked posts array. Decrements the count.
-  Future<void> unLikePost() {
-    return posts
-        .doc(widget.documentId)
-        .update({
-          'likes': FieldValue.arrayRemove([widget.postCreator.uuid])
-        })
-        .then((value) => print("post unliked!"))
-        .catchError((error) => print("Failed to unlike post: $error"));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +176,7 @@ class _PostTileState extends State<PostTile> {
                         widget.unFavColor = Colors.redAccent;
                         widget.favIcon = Icon(Icons.favorite);
                         widget.isFavorited = true;
-                        likePost();
+                        likePost(widget.documentId, widget.postCreator.uuid);
                         //call firebase function to increment the number of posts
                       });
                     } else {
@@ -207,7 +186,7 @@ class _PostTileState extends State<PostTile> {
                         widget.unFavColor = Colors.grey;
                         widget.unFavIcon = Icon(Icons.favorite_border_outlined);
                         widget.isFavorited = false;
-                        unLikePost();
+                        unLikePost(widget.documentId, widget.postCreator.uuid);
                       });
                     }
                   },
@@ -319,40 +298,6 @@ class _PostPageState extends State<PostPage> {
       FirebaseFirestore.instance.collection('user_posts');
 
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-  Future<void> likePost() {
-    return posts
-        .doc(widget.postInformation.documentId)
-        .update({
-          'likes':
-              FieldValue.arrayUnion([widget.postInformation.postCreator.uuid])
-        })
-        .then((value) => print("post liked!"))
-        .catchError((error) => print("Failed to like post: $error"));
-  }
-
-  Future<void> unLikePost() {
-    return posts
-        .doc(widget.postInformation.documentId)
-        .update({
-          'likes':
-              FieldValue.arrayRemove([widget.postInformation.postCreator.uuid])
-        })
-        .then((value) => print("post unliked!"))
-        .catchError((error) => print("Failed to unlike post: $error"));
-  }
-
-  Future<void> replyToPost(String userId, String comment) {
-    return posts
-        .doc(widget.postInformation.documentId)
-        .update({
-          'comments': FieldValue.arrayUnion([
-            {userId: comment}
-          ])
-        })
-        .then((value) => print("post replied!"))
-        .catchError((error) => print("Failed to replied post: $error"));
-  }
 
   Widget buildCommentList(List comments) {
     List<CommentTile> commentThread = [];
@@ -574,7 +519,10 @@ class _PostPageState extends State<PostPage> {
                                               Icon(Icons.favorite);
                                           widget.postInformation.isFavorited =
                                               true;
-                                          likePost();
+                                          likePost(
+                                              widget.postInformation.documentId,
+                                              widget.postInformation.postCreator
+                                                  .uuid);
                                           //call firebase function to increment the number of posts
                                         });
                                       } else {
@@ -588,7 +536,10 @@ class _PostPageState extends State<PostPage> {
                                                   .favorite_border_outlined);
                                           widget.postInformation.isFavorited =
                                               false;
-                                          unLikePost();
+                                          unLikePost(
+                                              widget.postInformation.documentId,
+                                              widget.postInformation.postCreator
+                                                  .uuid);
                                         });
                                       }
                                     },
@@ -622,7 +573,9 @@ class _PostPageState extends State<PostPage> {
 
                                     //if the comment text is not null submit the comment
                                     if (newCommentText != null) {
-                                      replyToPost(_auth.currentUser.uid,
+                                      uploadCommentToPost(
+                                          widget.postInformation.documentId,
+                                          _auth.currentUser.uid,
                                           newCommentText);
                                     }
 
