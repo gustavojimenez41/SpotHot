@@ -71,7 +71,7 @@ class _PostTileState extends State<PostTile> {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                       image: FirebaseImage(
-                          widget.postCreator.user_profile_picture,
+                          widget.postCreator.userProfilePictureLocation,
                           shouldCache: false),
                     ),
                     borderRadius: BorderRadius.circular(28.0)),
@@ -410,7 +410,7 @@ class _PostPageState extends State<PostPage> {
                                       image: DecorationImage(
                                         image: FirebaseImage(
                                             widget.postInformation.postCreator
-                                                .user_profile_picture,
+                                                .userProfilePictureLocation,
                                             shouldCache: false),
                                       ),
                                       borderRadius:

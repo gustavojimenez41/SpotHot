@@ -16,25 +16,34 @@ class PropertyScreen extends StatefulWidget {
 
 class _PropertyScreenState extends State<PropertyScreen> {
   final _auth = auth.FirebaseAuth.instance;
-  Widget allComments;
+  List allComments;
+  User currentUser;
+  Future<void> blehss() async {
+    // allComments = await getCommentsOnPropertyOrPost('property', 'BC7bCPBGIksnfXJon378');
+    // currentUser = await getUserByUUID(_auth.currentUser.uid);
+    allComments = [
+      {'user': 'fdlsh', 'value': 'this is comment2'},
+      {'user': 'fdlsh', 'value': 'this is comment3'},
+      {'user': 'fdlsh', 'value': 'this is comment4'},
+      {'user': 'fdlsh', 'value': 'this is comment5'},
+    ];
+    currentUser = User('gustavo', "Jimenez", "bio", "uuid", "stavo41", [], [],
+        "profileLocation");
+    return;
+  }
 
-  Future<Widget> buildCommentList() async {
+  Widget buildCommentList(List curComments) {
     List<CommentTile> commentThread = [];
-    List<Map> comments = [];
-    currentUser = await getUserByUUID(_auth.currentUser.uid);
 
-    for (var comment in comments) {
-      var commentData = {};
-      commentData = comment;
-      String commentUserId = commentData.keys.first;
-      String userComment = commentData.values.first;
+    for (var comment in curComments) {
+      String commentUserId = comment['user'];
+      String userComment = comment['value'];
 
       //get the create a user object with the user's uid
 
       //create a comment tile
       final cTile =
           CommentTile(commentCreator: currentUser, comment: userComment);
-
       commentThread.add(cTile);
     }
 
@@ -50,17 +59,6 @@ class _PropertyScreenState extends State<PropertyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> bleh = [
-      "first comment",
-      "second comment",
-      "third comment",
-      "fourth comment"
-    ];
-    List<Text> listTexts = [];
-    for (String com in bleh) {
-      Text curPropretyCard = Text('$com');
-      listTexts.add(curPropretyCard);
-    }
     TextStyle _nameTextStyle = TextStyle(
       fontFamily: 'Roboto',
       color: Colors.black,
@@ -68,11 +66,12 @@ class _PropertyScreenState extends State<PropertyScreen> {
       fontWeight: FontWeight.w700,
     );
     return FutureBuilder(
-        future: buildCommentList(),
+        future: blehss(),
         builder: (context, snapshot) {
           Size screenSize = MediaQuery.of(context).size;
           if (snapshot.connectionState == ConnectionState.done) {
-            allComments = snapshot.data;
+            // allComments = snapshot.data;
+            Widget commentToShow = buildCommentList(allComments);
             List<Widget> columnValues = [
               CarouselSlider(
                 options: CarouselOptions(
@@ -122,7 +121,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                 endIndent: 25,
               ),
             ];
-            columnValues.add(allComments);
+            columnValues.add(commentToShow);
             return Scaffold(
               backgroundColor: Colors.white,
               body: SafeArea(
