@@ -75,7 +75,7 @@ class _PostTileState extends State<PostTile> {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                       image: FirebaseImage(
-                          widget.postCreator.user_profile_picture,
+                          widget.postCreator.userProfilePictureLocation,
                           shouldCache: false),
                     ),
                     borderRadius: BorderRadius.circular(28.0)),
@@ -115,6 +115,8 @@ class _PostTileState extends State<PostTile> {
           GestureDetector(
             onTap: () {
               //when the user taps on the image take to the post page
+              print("Image tapped.");
+
               var route = new MaterialPageRoute(
                 builder: (BuildContext context) => new PostPage(widget),
               );

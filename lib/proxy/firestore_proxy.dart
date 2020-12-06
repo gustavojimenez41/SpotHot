@@ -24,6 +24,7 @@ Future<User> getUserByUUID(String uuid) async {
   return user;
 }
 
+//TODO: fix this
 Future<List<Property>> getNearestProperties() async {
   //currently mock db call
   List<Property> ans = [];
@@ -80,17 +81,39 @@ Future<void> createProperty(
       .catchError((error) => print("Failed to upload property: $error"));
 }
 
-//input is uuid of post/property
-Future<List<Comment>> getCommentsOnProperty(String uuid) async {
-  List<Comment> allComments = [];
-  //make firestore call to retrieve from db
-  //for every comment in DB, convert to Class Comment
-  for (int i = 0; i < 3; i++) {
-    Comment curComment = Comment("stavo41",
-        "I have been here $i time(s)! This place is great!", DateTime.now(), 4);
-    allComments.add(curComment);
-  }
-  return allComments;
+Future<List> getCommentsOnPropertyOrPost(
+    String collectionToRetrieve, String uuid) async {
+  //collectionToRetrieve is either 'property' or 'user_posts'
+  final _firestore = firestore.FirebaseFirestore.instance;
+  Map<String, dynamic> allComments = await _firestore
+      .collection(collectionToRetrieve)
+      .doc(uuid)
+      .get()
+      .then((value) => value.data());
+  print(allComments['comments']);
+  return allComments['comments'];
+}
+
+//TODO: ensure function works
+Future<void> uploadCommentToProperty(
+    String propertyUUID, String userUUID, String comment) {
+  //String commentToUpload, String postUUID, String userUUID
+  firestore.CollectionReference posts =
+      firestore.FirebaseFirestore.instance.collection('property');
+  return posts
+      .doc(propertyUUID)
+      .update({
+        'comments': firestore.FieldValue.arrayUnion([
+          {
+            'dateOfComment': DateTime.now().toString(),
+            'upVoters': [],
+            'user': userUUID,
+            'value': comment,
+          }
+        ])
+      })
+      .then((value) => print("post replied!"))
+      .catchError((error) => print("Failed to replied post: $error"));
 }
 
 Future<void> uploadCommentToPost(String postID, String userID, String comment) {
@@ -111,15 +134,6 @@ Future<void> uploadCommentToPost(String postID, String userID, String comment) {
       })
       .then((value) => print("post replied!"))
       .catchError((error) => print("Failed to replied post: $error"));
-}
-
-Future<List<Comment>> getCommentsOnPost(String userPostUUID) async {
-  final _firestore = firestore.FirebaseFirestore.instance;
-  Map<String, dynamic> allComments = await _firestore
-      .collection('user_posts')
-      .where('uuid', isEqualTo: userPostUUID)
-      .get()
-      .then((value) => value.docs.first.data());
 }
 
 Future<void> likeComment() async {}

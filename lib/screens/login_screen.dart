@@ -4,6 +4,7 @@ import 'package:spot_hot/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'home.dart';
+import 'package:spot_hot/screens/new_search_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = "login_screen";
@@ -68,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 title: "Log In",
                 color: Colors.lightBlueAccent,
                 onPressed: () async {
+                  // Navigator.pushNamed(context, SearchNew.id);
                   setState(() {
                     showSpinner = true;
                   });

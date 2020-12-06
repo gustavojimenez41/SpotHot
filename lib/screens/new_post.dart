@@ -51,7 +51,7 @@ class _NewPostState extends State<NewPost> {
 
                     if (permissionStatus.isGranted) {
                       image =
-                      await _picker.getImage(source: ImageSource.gallery);
+                          await _picker.getImage(source: ImageSource.gallery);
                       imageSelected = File(image.path);
                       imageName = basename(imageSelected.path);
 
@@ -73,10 +73,10 @@ class _NewPostState extends State<NewPost> {
                     color: Colors.black12,
                     child: imageSelected == null
                         ? Icon(
-                      Icons.add,
-                      color: Colors.black38,
-                      size: 40.0,
-                    )
+                            Icons.add,
+                            color: Colors.black38,
+                            size: 40.0,
+                          )
                         : Image.file(imageSelected, height: 40.0, width: 40),
                   ),
                 )

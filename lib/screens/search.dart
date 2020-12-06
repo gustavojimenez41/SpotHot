@@ -76,8 +76,8 @@ class ListPropertyCards extends StatelessWidget {
             return SingleChildScrollView(
               child: Center(
                   child: Column(
-                    children: listPropertyCards,
-                  )),
+                children: listPropertyCards,
+              )),
             );
           } else {
             return CircularProgressIndicator();

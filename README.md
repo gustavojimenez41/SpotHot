@@ -1,13 +1,16 @@
-# SpotHot
-senior design
+# spot_hot
 
-For how firebase is incorporated see Gustavo. For now though, use mock data
+A new Flutter application.
 
-structure
+## Getting Started
 
-/components - add custom components here that can be resued by multiple screens
+This project is a starting point for a Flutter application.
 
-/models - this is classes that are related to firebase backend
+A few resources to get you started if this is your first Flutter project:
 
-/screens - all different screen.
-to test your screen, add its navigation to main.dart and nav.push in code
+- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+
+For help getting started with Flutter, view our
+[online documentation](https://flutter.dev/docs), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

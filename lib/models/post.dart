@@ -12,9 +12,9 @@ class Post {
   bool isLiked;
 
   Post(
-      this.image,
-      this.userId,
-      this.description,
-      this.date,
-      );
+    this.image,
+    this.userId,
+    this.description,
+    this.date,
+  );
 }

@@ -34,6 +34,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:708405971969:android:276cccc4a8a9e3324f0400",
+        "android_client_info": {
+          "package_name": "com.example.spot_hot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "708405971969-guftkcv6eu4irurv67f1cfu5oa3qpfs1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWkvCJZX6okO0NDxlfk3By5vHgbS6QdbQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "708405971969-guftkcv6eu4irurv67f1cfu5oa3qpfs1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

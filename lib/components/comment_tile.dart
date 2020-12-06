@@ -6,7 +6,7 @@ class CommentTile extends StatefulWidget {
   @override
   _CommentTileState createState() => _CommentTileState();
   final User commentCreator;
-  String comment;
+  final String comment;
 
   CommentTile({this.commentCreator, this.comment}) {}
 }
@@ -20,25 +20,12 @@ class _CommentTileState extends State<CommentTile> {
           children: [
             Row(
               children: [
-                Container(
-                  width: 30.0,
-                  height: 30.0,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: FirebaseImage(
-                            widget.commentCreator.user_profile_picture,
-                            shouldCache: false),
-                      ),
-                      borderRadius: BorderRadius.circular(28.0)),
-                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0),
-                  child: Expanded(
-                    child: Text(
-                      widget.commentCreator.userName,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
+                  child: Text(
+                    widget.commentCreator.userName,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.black),
                   ),
                 ),
               ],
