@@ -139,7 +139,8 @@ class _ProfileState extends State<Profile> {
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom),
               child: editProfile(
-                  userProfileImageLocation: currentUser.userProfilePictureLocation),
+                  userProfileImageLocation:
+                      currentUser.userProfilePictureLocation),
             ),
           ),
         );

@@ -134,7 +134,7 @@ class _PostPageState extends State<PostPage> {
                                       image: DecorationImage(
                                         image: FirebaseImage(
                                             widget.postInformation.postCreator
-                                                .user_profile_picture,
+                                                .userProfilePictureLocation,
                                             shouldCache: false),
                                       ),
                                       borderRadius:
