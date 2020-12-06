@@ -6,18 +6,26 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import 'package:spot_hot/constants.dart';
+import 'package:path/path.dart';
+import 'package:firebase_image/firebase_image.dart';
 
 class editProfile extends StatefulWidget {
+  String userProfileImageLocation;
+
+  editProfile({this.userProfileImageLocation});
+
   @override
   _editProfileState createState() => _editProfileState();
 }
 
 class _editProfileState extends State<editProfile> {
   FirebaseAuth auth;
+  File imageSelected;
+  String imageName;
+  String bioText;
 
   @override
   Widget build(BuildContext context) {
-    String bioText;
     auth = FirebaseAuth.instance;
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference users = firestore.collection('users');
@@ -61,50 +69,47 @@ class _editProfileState extends State<editProfile> {
               ),
             ),
             Padding(
-              padding:
-                  const EdgeInsets.only(right: 110.0, left: 110.0, bottom: 8.0),
-              child: FlatButton(
-                color: Colors.grey,
-                textColor: Colors.white,
-                onPressed: () async {
-                  final _storage = FirebaseStorage.instance;
-                  final _picker = ImagePicker();
-                  PickedFile image;
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Container(
+                width: 60.0,
+                height: 60.0,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.add_a_photo,
+                    color: Colors.white,
+                  ),
+                  onPressed: () async {
+                    print("Icon changed.");
 
-                  await Permission.photos.request();
+                    //open the image selector
+                    final _picker = ImagePicker();
+                    PickedFile image;
 
-                  var permissionStatus = await Permission.photos.status;
+                    await Permission.photos.request();
+                    var permissionStatus = await Permission.photos.status;
 
-                  if (permissionStatus.isGranted) {
-                    image = await _picker.getImage(source: ImageSource.gallery);
-                    File file = File(image.path);
-
-                    if (image != null) {
-                      //upload to firebase
-                      var snapshot = await _storage
-                          .ref()
-                          .child(
-                              'user_profile_picture/${file.hashCode}') //change this to be something else like the name of the file
-                          .putFile(file)
-                          .onComplete;
-
-                      //create the path for the user's profile storage
-                      String storagepath = StoragePath;
-                      var userprofileURL = await snapshot.ref.getPath();
-                      var pathURL = storagepath + userprofileURL;
-
-                      print("PATH url: $pathURL");
-
-                      updateUserProfile(auth.currentUser.uid, pathURL);
-                    } else {
-                      print('No path received!');
+                    if (permissionStatus.isGranted) {
+                      image =
+                          await _picker.getImage(source: ImageSource.gallery);
+                      imageSelected = File(image.path);
+                      imageName = basename(imageSelected.path);
+                      print("Image name: $imageName");
                     }
-                  } else {
-                    print('Permissions not granted.');
-                  }
-                  Navigator.pop(context);
-                },
-                child: Text('upload'),
+
+                    // this is used to update the icon next the the choose image button.
+                    if (imageSelected != null) {
+                      setState(() {});
+                    }
+                  },
+                ),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: imageSelected == null
+                        ? FirebaseImage(widget.userProfileImageLocation)
+                        : FileImage(imageSelected),
+                  ),
+                ),
               ),
             ),
             Text(
@@ -132,13 +137,87 @@ class _editProfileState extends State<editProfile> {
                   color: Colors.lightBlueAccent,
                   textColor: Colors.white,
                   onPressed: () async {
-                    //save the bio text
-                    print('current user id: ${auth.currentUser.uid}');
-                    try {
-                      updateUserBio(auth.currentUser.uid, bioText);
-                      Navigator.pop(context);
-                    } catch (e) {
-                      print(e);
+                    final _storage = FirebaseStorage.instance;
+
+                    //if the user did not choose an image just update the bio.
+                    if (imageSelected == null && bioText != null) {
+                      print('current user id: ${auth.currentUser.uid}');
+                      try {
+                        updateUserBio(auth.currentUser.uid, bioText);
+                        Navigator.pop(context);
+                      } catch (e) {
+                        print(e);
+                      }
+                    } //if the user is updating the image and the text
+                    else if (imageSelected != null && bioText != null) {
+                      //get the image filename of current profile picture
+                      var imagePath =
+                          widget.userProfileImageLocation.split('/');
+                      var imageFileName = imagePath.last;
+                      print("Current user profile file name: $imageFileName");
+
+                      //remove the old profile picture
+                      var snapshot = await _storage
+                          .ref()
+                          .child('user_profile_picture/$imageFileName')
+                          .delete();
+
+                      //upload the new profile picture
+                      var snapshotUpload = await _storage
+                          .ref()
+                          .child('user_profile_picture/$imageName')
+                          .putFile(imageSelected)
+                          .onComplete;
+
+                      //get image location
+                      String pictureName, pictureStorageLocation;
+                      pictureName = snapshotUpload.storageMetadata.path;
+                      pictureStorageLocation = StoragePath + pictureName;
+
+                      print("path url: $pictureStorageLocation");
+
+                      //update the user's profile image with the image location
+                      updateUserProfile(
+                          auth.currentUser.uid, pictureStorageLocation);
+
+                      //update the bio
+                      try {
+                        updateUserBio(auth.currentUser.uid, bioText);
+                        Navigator.pop(context);
+                      } catch (e) {
+                        print(e);
+                      }
+                    } //if the user wants to update their profile picture only
+                    else if (imageSelected != null && bioText == null) {
+                      //get the image filename of current profile picture
+                      var imagePath =
+                          widget.userProfileImageLocation.split('/');
+                      var imageFileName = imagePath.last;
+                      print("Current user profile file name: $imageFileName");
+
+                      //remove the old profile picture
+                      var snapshot = await _storage
+                          .ref()
+                          .child('user_profile_picture/$imageFileName')
+                          .delete();
+
+                      //upload the new profile picture
+                      var snapshotUpload = await _storage
+                          .ref()
+                          .child('user_profile_picture/$imageName')
+                          .putFile(imageSelected)
+                          .onComplete;
+
+                      //get image location
+                      String pictureName, pictureStorageLocation;
+                      pictureName = snapshotUpload.storageMetadata.path;
+                      pictureStorageLocation = StoragePath + pictureName;
+
+                      print("path url: $pictureStorageLocation");
+
+                      //update the user's profile image with the image location
+                      updateUserProfile(
+                          auth.currentUser.uid, pictureStorageLocation);
                     }
                   },
                   child: Text('Save')),

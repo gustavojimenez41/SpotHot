@@ -128,7 +128,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildEditProfile() {
+  Widget _buildEditProfile(User currentUser) {
     return OutlineButton(
       onPressed: () {
         showModalBottomSheet(
@@ -138,7 +138,9 @@ class _ProfileState extends State<Profile> {
             child: Container(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: editProfile(),
+              child: editProfile(
+                  userProfileImageLocation:
+                      currentUser.userProfilePictureLocation),
             ),
           ),
         );
@@ -216,6 +218,8 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  //14:20
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -237,7 +241,7 @@ class _ProfileState extends State<Profile> {
                           _buildFullName(currentUser),
                           _buildBio(context, currentUser),
                           _buildStatContainer(currentUser),
-                          _buildEditProfile(),
+                          _buildEditProfile(currentUser),
                           _buildConnectWithUser(context),
                           _buildButtons(),
                           UserPostStream(),
