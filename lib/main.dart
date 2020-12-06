@@ -4,6 +4,7 @@ import 'package:spot_hot/screens/login_screen.dart';
 import 'package:spot_hot/screens/registration_screen.dart';
 import 'package:spot_hot/screens/chat_screen.dart';
 import 'package:spot_hot/screens/home.dart';
+import 'package:spot_hot/screens/property_screen.dart';
 
 void main() => runApp(SpotHot());
 
@@ -17,7 +18,8 @@ class SpotHot extends StatelessWidget {
         LoginScreen.id: (context) => LoginScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),
         ChatScreen.id: (context) => ChatScreen(),
-        Home.id: (context) => Home()
+        Home.id: (context) => Home(),
+        PropertyScreen.id: (context) => PropertyScreen(),
       },
     );
   }

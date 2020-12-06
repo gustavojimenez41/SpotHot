@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-
 class Comment {
+  String user;
   String value;
   List<String> upvoters;
-  String user;
-  String propertyName;
+  int numOfLikes;
+  DateTime dateOfComment;
+  Comment(this.user, this.value, this.dateOfComment, this.numOfLikes);
 }

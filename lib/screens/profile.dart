@@ -1,7 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:spot_hot/models/user.dart';
-import 'newpost.dart';
+import 'package:spot_hot/proxy/firestore_proxy.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_image/firebase_image.dart';
+import 'edit_profile.dart';
+import 'new_post.dart';
+import 'package:spot_hot/components/post_tile.dart';
+
+final _firestore = FirebaseFirestore.instance;
+User currentUser;
+int totalPosts = 0;
 
 class Profile extends StatefulWidget {
   @override
@@ -9,32 +20,22 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final _auth = auth.FirebaseAuth.instance;
   String _fullname = "John Doe";
-  String _bio = "This bio is about me";
-  String _followers = "0";
-  String _following = "0";
-  String _posts = "0";
 
-  Widget _buildCoverImage(Size screenSize) {
-    return Container(
-      height: screenSize.height / 3.3,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('images/defaultwallpaper.jpg'),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
+  Widget _buildProfileImage(User currentUser) {
+    //pull the image from the storage using the user's id
+    //use the ternary operator if the path exists in firebase serve the image if not use the default profile image.
+    print('Users profile url: ${currentUser.user_profile_picture}');
 
-  Widget _buildProfileImage() {
     return Center(
       child: Container(
         width: 140.0,
         height: 140.0,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/defaultprofile.png'),
+            image: FirebaseImage(currentUser.user_profile_picture,
+                shouldCache: false),
           ),
           borderRadius: BorderRadius.circular(80.0),
           border: Border.all(
@@ -46,21 +47,23 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildFullName() {
+  Widget _buildFullName(User currentUser) {
     TextStyle _nameTextStyle = TextStyle(
       fontFamily: 'Roboto',
       color: Colors.black,
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
     );
-
+    String fname = currentUser.firstName;
+    String lname = currentUser.lastName;
+    _fullname = "$fname $lname";
     return Text(
-      _fullname,
+      '$fname $lname',
       style: _nameTextStyle,
     );
   }
 
-  Widget _buildBio(BuildContext context) {
+  Widget _buildBio(BuildContext context, User currentUser) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
       decoration: BoxDecoration(
@@ -68,7 +71,7 @@ class _ProfileState extends State<Profile> {
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: Text(
-        _bio,
+        currentUser.bio,
         style: TextStyle(
           fontFamily: 'Spectral',
           color: Colors.black,
@@ -107,7 +110,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildStatContainer() {
+  Widget _buildStatContainer(User currentUser) {
     return Container(
       height: 60.0,
       margin: EdgeInsets.only(top: 8.0),
@@ -117,11 +120,31 @@ class _ProfileState extends State<Profile> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          _buildStatItem("Following", _following),
-          _buildStatItem("Followers", _followers),
-          _buildStatItem("Posts", _posts),
+          _buildStatItem("Following", currentUser.following.length.toString()),
+          _buildStatItem("Followers", currentUser.followers.length.toString()),
+          _buildStatItem("Posts", totalPosts.toString()),
         ],
       ),
+    );
+  }
+
+  Widget _buildEditProfile(User currentUser) {
+    return OutlineButton(
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (BuildContext context) => SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: editProfile(
+                  userProfileImageLocation: currentUser.user_profile_picture),
+            ),
+          ),
+        );
+      },
+      child: Text('Edit Profile'),
     );
   }
 
@@ -194,51 +217,127 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  //14:20
-
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          _buildCoverImage(screenSize),
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
+    return FutureBuilder(
+        future: getUserByUUID(_auth.currentUser.uid),
+        builder: (context, snapshot) {
+          Size screenSize = MediaQuery.of(context).size;
+          if (snapshot.connectionState == ConnectionState.done) {
+            currentUser = snapshot.data;
+            return Scaffold(
+              body: Stack(
                 children: [
-                  SizedBox(height: screenSize.height / 6.4),
-                  _buildProfileImage(),
-                  _buildFullName(),
-                  _buildBio(context),
-                  _buildStatContainer(),
-                  _buildConnectWithUser(context),
-                  _buildButtons(),
+                  //_buildCoverImage(screenSize),
+                  SafeArea(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          //SizedBox(height: screenSize.height / 6.4),
+                          _buildProfileImage(currentUser),
+                          _buildFullName(currentUser),
+                          _buildBio(context, currentUser),
+                          _buildStatContainer(currentUser),
+                          _buildEditProfile(currentUser),
+                          _buildConnectWithUser(context),
+                          _buildButtons(),
+                          UserPostStream(),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Handler to create a new post
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (BuildContext context) => SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: NewPost(),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  // Handler to create a new post
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) => SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom),
+                        child: NewPost(),
+                      ),
+                    ),
+                  );
+                },
+                child: Icon(Icons.create),
+                backgroundColor: Colors.lightBlueAccent,
               ),
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
+  }
+}
+
+class UserPostStream extends StatefulWidget {
+  @override
+  _UserPostStreamState createState() => _UserPostStreamState();
+}
+
+class _UserPostStreamState extends State<UserPostStream> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('user_posts').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.lightBlueAccent,
             ),
           );
-        },
-        child: Icon(Icons.create),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
+        } else {
+          List<PostTile> userPosts = [];
+          int currentUserPosts = 0;
+
+          //get all the posts - iterate and only get the ones that contain the user's id
+          var posts = snapshot.data.documents.reversed;
+
+          for (var post in posts) {
+            final user_id = post.get('user_id');
+
+            //get all the posts created by the current logged on user
+            if (user_id == currentUser.uuid) {
+              print(
+                  "obtained post with user_id: ${post.get('user_id')} date: ${post.get('date')},"
+                  " desc: ${post.get('description')}, image: ${post.get('image')}");
+              print("The id is: ${post.id}");
+
+              //create a postTile with the user's info
+              final pTile = PostTile(
+                postCreator: currentUser,
+                postDescription: post.get('description'),
+                postImageLocation: post.get('image'),
+                documentId: post.id,
+                favs: post.get('likes'),
+                //comments: post.get('comments'),
+              );
+
+              //append the postTile to the list of userPosts
+              userPosts.add(pTile);
+
+              //increment the amount of user posts for the current user
+              currentUserPosts++;
+            }
+          }
+          print("Total user posts: ${userPosts.length}");
+
+          totalPosts = currentUserPosts;
+
+          return ListView(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            children: userPosts,
+            shrinkWrap: true,
+            physics: ScrollPhysics(),
+            reverse: true,
+          );
+        }
+      },
     );
   }
 }
