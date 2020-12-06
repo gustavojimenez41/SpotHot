@@ -187,6 +187,37 @@ class _editProfileState extends State<editProfile> {
                       } catch (e) {
                         print(e);
                       }
+                    } //if the user wants to update their profile picture only
+                    else if (imageSelected != null && bioText == null) {
+                      //get the image filename of current profile picture
+                      var imagePath =
+                          widget.userProfileImageLocation.split('/');
+                      var imageFileName = imagePath.last;
+                      print("Current user profile file name: $imageFileName");
+
+                      //remove the old profile picture
+                      var snapshot = await _storage
+                          .ref()
+                          .child('user_profile_picture/$imageFileName')
+                          .delete();
+
+                      //upload the new profile picture
+                      var snapshotUpload = await _storage
+                          .ref()
+                          .child('user_profile_picture/$imageName')
+                          .putFile(imageSelected)
+                          .onComplete;
+
+                      //get image location
+                      String pictureName, pictureStorageLocation;
+                      pictureName = snapshotUpload.storageMetadata.path;
+                      pictureStorageLocation = StoragePath + pictureName;
+
+                      print("path url: $pictureStorageLocation");
+
+                      //update the user's profile image with the image location
+                      updateUserProfile(
+                          auth.currentUser.uid, pictureStorageLocation);
                     }
                   },
                   child: Text('Save')),
