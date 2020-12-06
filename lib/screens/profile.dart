@@ -26,7 +26,7 @@ class _ProfileState extends State<Profile> {
   Widget _buildProfileImage(User currentUser) {
     //pull the image from the storage using the user's id
     //use the ternary operator if the path exists in firebase serve the image if not use the default profile image.
-    print('Users profile url: ${currentUser.user_profile_picture}');
+    print('Users profile url: ${currentUser.userProfilePictureLocation}');
 
     return Center(
       child: Container(
@@ -34,7 +34,7 @@ class _ProfileState extends State<Profile> {
         height: 140.0,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: FirebaseImage(currentUser.user_profile_picture,
+            image: FirebaseImage(currentUser.userProfilePictureLocation,
                 shouldCache: false),
           ),
           borderRadius: BorderRadius.circular(80.0),

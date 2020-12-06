@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 class MapsPage extends StatelessWidget {
+  static const id = "maps_page";
   @override
   Widget build(BuildContext context) {
     return MapSample();

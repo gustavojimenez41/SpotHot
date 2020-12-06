@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 import 'package:spot_hot/constants.dart';
+import 'package:spot_hot/proxy/firestore_proxy.dart';
 
 class NewPost extends StatefulWidget {
   @override
@@ -21,26 +22,6 @@ class _NewPostState extends State<NewPost> {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    CollectionReference userPosts = firestore.collection('user_posts');
-
-    Future<void> uploadPost(String userId, String description,
-        String dateTimeStamp, String pictureStorageLocation) {
-      return userPosts
-          .doc()
-          .set({
-            'comments': '',
-            'date': dateTimeStamp,
-            'description': description,
-            'image':
-                pictureStorageLocation, // image location, updated after image is uploaded
-            'likes': [], //list if user_ids length of array for likes
-            'user_id': userId, //use id of the original poster
-          })
-          .then((value) => print("post uploaded"))
-          .catchError((error) => print("Failed to upload post: $error"));
-    }
-
     return Container(
       color: Color(0xFF757575),
       child: Container(
@@ -151,7 +132,7 @@ class _NewPostState extends State<NewPost> {
                       print("Datetime: ${DateTime.now()}");
 
                       //upload the post with the image storage location
-                      uploadPost(auth.currentUser.uid, newPostText,
+                      createUserPost(auth.currentUser.uid, newPostText,
                           DateTime.now().toString(), pictureStorageLocation);
                     }
 

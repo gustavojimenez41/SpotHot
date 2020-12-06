@@ -1,12 +1,8 @@
-import 'user.dart';
-
 class Comment {
+  String user;
   String value;
   List<String> upvoters;
-  String user;
-  String propertyName;
-  bool isLiked;
-  User currentUser;
+  int numOfLikes;
   DateTime dateOfComment;
-  Comment(this.user, this.value, this.dateOfComment, this.isLiked);
+  Comment(this.user, this.value, this.dateOfComment, this.numOfLikes);
 }

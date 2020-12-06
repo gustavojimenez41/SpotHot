@@ -9,7 +9,8 @@ class Property {
   List<Image> images;
   List<Comment> comments;
 
-  Property() {}
+  Property(this.name, this.propertyType, this.latitude, this.longitude,
+      this.images, this.comments) {}
 }
 
 enum PropertyType {

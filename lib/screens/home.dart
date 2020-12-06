@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'maps.dart';
 import 'profile.dart';
+import 'search.dart';
 
 class Home extends StatefulWidget {
   static const id = "home";
@@ -15,9 +16,7 @@ class _HomeState extends State<Home> {
 
   final List<Widget> _widgetOptions = [
     MapsPage(),
-    Text(
-      'Index 1: Search',
-    ),
+    ListPropertyCards(),
     Profile(),
   ];
 
