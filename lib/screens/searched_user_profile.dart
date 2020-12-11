@@ -1,35 +1,61 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:spot_hot/models/user.dart';
 import 'package:spot_hot/proxy/firestore_proxy.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_image/firebase_image.dart';
-import 'package:spot_hot/screens/follow_list.dart';
-import 'package:spot_hot/screens/search_users.dart';
 import 'edit_profile.dart';
 import 'new_post.dart';
 import 'package:spot_hot/components/post_tile.dart';
-import 'search_users.dart';
+import 'package:spot_hot/screens/profile.dart';
+import 'package:spot_hot/proxy/firestore_proxy.dart';
 
 final _firestore = FirebaseFirestore.instance;
-User currentUser;
+User searchedUser;
 int totalPosts = 0;
 
-class Profile extends StatefulWidget {
+class SearchedUserProfile extends StatefulWidget {
+  String userUUID;
+
+  SearchedUserProfile(this.userUUID);
+
   @override
-  _ProfileState createState() => _ProfileState();
+  _SearchedUserProfileState createState() => _SearchedUserProfileState();
 }
 
-class _ProfileState extends State<Profile> {
-  final _auth = auth.FirebaseAuth.instance;
+class _SearchedUserProfileState extends State<SearchedUserProfile> {
   String _fullname = "John Doe";
+  bool currentlyFollowing;
 
-  Widget _buildProfileImage(User currentUser) {
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      currentlyFollowing = checkFollowing();
+    });
+  }
+
+  bool checkFollowing() {
+    //for debugging
+    for (var u in currentUser.following) {
+      print("current user is following: $u");
+    }
+
+    if (currentUser.following.contains(searchedUser.uuid)) {
+      print("The current logged on user IS following this user!");
+    } else {
+      print("The current logged on user is NOT following this user!");
+    }
+
+    return currentUser.following.contains(searchedUser.uuid);
+  }
+
+  Widget _buildProfileImage(User searchedUser) {
     //pull the image from the storage using the user's id
     //use the ternary operator if the path exists in firebase serve the image if not use the default profile image.
-    print('Users profile url: ${currentUser.userProfilePictureLocation}');
+    print('Users profile url: ${searchedUser.userProfilePictureLocation}');
+
+    //check if the current logged on user is following searched user
 
     return Center(
       child: Container(
@@ -37,7 +63,7 @@ class _ProfileState extends State<Profile> {
         height: 140.0,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: FirebaseImage(currentUser.userProfilePictureLocation,
+            image: FirebaseImage(searchedUser.userProfilePictureLocation,
                 shouldCache: false),
           ),
           borderRadius: BorderRadius.circular(80.0),
@@ -50,15 +76,15 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildFullName(User currentUser) {
+  Widget _buildFullName(User searchedUser) {
     TextStyle _nameTextStyle = TextStyle(
       fontFamily: 'Roboto',
       color: Colors.black,
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
     );
-    String fname = currentUser.firstName;
-    String lname = currentUser.lastName;
+    String fname = searchedUser.firstName;
+    String lname = searchedUser.lastName;
     _fullname = "$fname $lname";
     return Text(
       '$fname $lname',
@@ -66,7 +92,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildBio(BuildContext context, User currentUser) {
+  Widget _buildBio(BuildContext context, User searchedUser) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
       decoration: BoxDecoration(
@@ -74,7 +100,7 @@ class _ProfileState extends State<Profile> {
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: Text(
-        currentUser.bio,
+        searchedUser.bio,
         style: TextStyle(
           fontFamily: 'Spectral',
           color: Colors.black,
@@ -113,7 +139,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildStatContainer(User currentUser) {
+  Widget _buildStatContainer(User searchedUser) {
     return Container(
       height: 60.0,
       margin: EdgeInsets.only(top: 8.0),
@@ -123,71 +149,15 @@ class _ProfileState extends State<Profile> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          GestureDetector(
-            child: _buildStatItem(
-                "Following", currentUser.following.length.toString()),
-            onTap: () async {
-              print(
-                  "//show the list of users the current logged in user is following");
-              if (currentUser.following.length > 0) {
-                List<User> followingList = [];
-
-                //get the list of users current user is following
-                for (var userId in currentUser.following) {
-                  print(userId);
-
-                  User userFollowing = await getUserByUUID(userId);
-                  followingList.add(userFollowing);
-                }
-
-                //call the navigator to take the post's page
-                var route = new MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      new FollowList(followingList),
-                );
-
-                Navigator.of(context).push(route);
-              }
-
-              //pass this list to the list screen, push the list screen route on the navigator.
-            },
-          ),
-          GestureDetector(
-            child: _buildStatItem(
-              "Followers",
-              currentUser.followers.length.toString(),
-            ),
-            onTap: () async {
-              print(
-                  "//show the list of followers the current logged in user has");
-
-              if (currentUser.followers.length > 0) {
-                List<User> followingList = [];
-
-                for (var userId in currentUser.followers) {
-                  print(userId);
-
-                  User userFollowing = await getUserByUUID(userId);
-                  followingList.add(userFollowing);
-                }
-
-                //call the navigator to take the post's page
-                var route = new MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      new FollowList(followingList),
-                );
-
-                Navigator.of(context).push(route);
-              }
-            },
-          ),
+          _buildStatItem("Following", searchedUser.following.length.toString()),
+          _buildStatItem("Followers", searchedUser.followers.length.toString()),
           _buildStatItem("Posts", totalPosts.toString()),
         ],
       ),
     );
   }
 
-  Widget _buildEditProfile(User currentUser) {
+  Widget _buildEditProfile(User searchedUser) {
     return OutlineButton(
       onPressed: () {
         showModalBottomSheet(
@@ -199,7 +169,7 @@ class _ProfileState extends State<Profile> {
                   bottom: MediaQuery.of(context).viewInsets.bottom),
               child: editProfile(
                   userProfileImageLocation:
-                      currentUser.userProfilePictureLocation),
+                      searchedUser.userProfilePictureLocation),
             ),
           ),
         );
@@ -215,45 +185,69 @@ class _ProfileState extends State<Profile> {
         children: [
           Expanded(
             child: InkWell(
-              onTap: () {
-                //fetch the user lists to search
-
-                var route = new MaterialPageRoute(
-                  builder: (BuildContext context) => new SearchUsers(),
-                );
-
-                Navigator.of(context).push(route);
+              onTap: () async {
+                //unfollow the user
+                if (currentlyFollowing == true) {
+                  removeFollower(currentUser.uuid, searchedUser.uuid);
+                  unfollowUser(currentUser.uuid, searchedUser.uuid);
+                  currentlyFollowing = false;
+                  setState(() {});
+                } else {
+                  //follow the user
+                  followUser(currentUser.uuid, searchedUser.uuid);
+                  addFollower(currentUser.uuid, searchedUser.uuid);
+                  currentlyFollowing = true;
+                  setState(() {});
+                }
               },
               child: Container(
                 height: 40.0,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
+                  color: currentlyFollowing == true
+                      ? Colors.grey
+                      : Colors.lightBlueAccent,
                 ),
                 child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text(
-                      "Message",
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                  child: Text(
+                    currentlyFollowing == true ? "Unfollow" : "Follow",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
+  Widget _buildConnectWithUser(BuildContext context) {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.only(top: 8.0),
+      child: Text(
+        'Connect with ${_fullname.split(" ")[0]}',
+        style: TextStyle(
+          fontFamily: 'Roboto',
+          fontSize: 16.0,
+        ),
+      ),
+    );
+  }
+
+  //14:20
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getUserByUUID(_auth.currentUser.uid),
+        future: getUserByUUID(widget.userUUID),
         builder: (context, snapshot) {
-          Size screenSize = MediaQuery.of(context).size;
           if (snapshot.connectionState == ConnectionState.done) {
-            currentUser = snapshot.data;
+            searchedUser = snapshot.data;
             return Scaffold(
               body: Stack(
                 children: [
@@ -263,11 +257,12 @@ class _ProfileState extends State<Profile> {
                       child: Column(
                         children: [
                           //SizedBox(height: screenSize.height / 6.4),
-                          _buildProfileImage(currentUser),
-                          _buildFullName(currentUser),
-                          _buildBio(context, currentUser),
-                          _buildStatContainer(currentUser),
-                          _buildEditProfile(currentUser),
+                          _buildProfileImage(searchedUser),
+                          _buildFullName(searchedUser),
+                          _buildBio(context, searchedUser),
+                          _buildStatContainer(searchedUser),
+                          _buildEditProfile(searchedUser),
+                          _buildConnectWithUser(context),
                           _buildButtons(),
                           UserPostStream(),
                         ],
@@ -330,15 +325,10 @@ class _UserPostStreamState extends State<UserPostStream> {
             final user_id = post.get('user_id');
 
             //get all the posts created by the current logged on user
-            if (user_id == currentUser.uuid) {
-              print(
-                  "obtained post with user_id: ${post.get('user_id')} date: ${post.get('date')},"
-                  " desc: ${post.get('description')}, image: ${post.get('image')}");
-              print("The id is: ${post.id}");
-
+            if (user_id == searchedUser.uuid) {
               //create a postTile with the user's info
               final pTile = PostTile(
-                postCreator: currentUser,
+                postCreator: searchedUser,
                 postDescription: post.get('description'),
                 postImageLocation: post.get('image'),
                 documentId: post.id,
@@ -353,7 +343,6 @@ class _UserPostStreamState extends State<UserPostStream> {
               currentUserPosts++;
             }
           }
-          print("Total user posts: ${userPosts.length}");
 
           totalPosts = currentUserPosts;
 

@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:spot_hot/models/comment.dart';
 import 'package:spot_hot/models/user.dart';
 import 'package:spot_hot/models/property.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 Future<User> getUserByUUID(String uuid) async {
   final _firestore = firestore.FirebaseFirestore.instance;
@@ -162,4 +165,92 @@ Future<void> unLikePost(String documentID, String postCreatorUUID) {
       })
       .then((value) => print("post unliked!"))
       .catchError((error) => print("Failed to unlike post: $error"));
+}
+
+//method to add searched user to current logged in user's following list
+Future<void> followUser(String loggedinUserUUID, String followingUserUUID) {
+  firestore.CollectionReference posts =
+      firestore.FirebaseFirestore.instance.collection('users');
+
+  return posts
+      .doc(loggedinUserUUID)
+      .update({
+        'following': firestore.FieldValue.arrayUnion([followingUserUUID])
+      })
+      .then((value) => print("following user: $followingUserUUID!"))
+      .catchError((error) => print("Failed to follow user: $error"));
+}
+
+//method to add current logged in user to the searched user's follower's list
+Future<void> addFollower(String loggedinUserUUID, String followingUserUUID) {
+  firestore.CollectionReference posts =
+      firestore.FirebaseFirestore.instance.collection('users');
+
+  return posts
+      .doc(followingUserUUID)
+      .update({
+        'followers': firestore.FieldValue.arrayUnion([loggedinUserUUID])
+      })
+      .then((value) => print(
+          "Current logged in user: $loggedinUserUUID added to user: $followingUserUUID's followers list!"))
+      .catchError((error) => print(
+          "Failed to add current logged on user to follower list: $error"));
+}
+
+//method to remove the searched user from the current logged in user's following list
+Future<void> unfollowUser(String loggedinUserUUID, String followingUserUUID) {
+  firestore.CollectionReference posts =
+      firestore.FirebaseFirestore.instance.collection('users');
+
+  return posts
+      .doc(loggedinUserUUID)
+      .update({
+        'following': firestore.FieldValue.arrayRemove([followingUserUUID])
+      })
+      .then((value) => print(
+          "User: $followingUserUUID removed from current user: $loggedinUserUUID's followers list!"))
+      .catchError((error) => print(
+          "Failed to remove $followingUserUUID from follower's list: $error"));
+}
+
+//method to remove the current logged in user from the searched user's followers list.
+Future<void> removeFollower(String loggedinUserUUID, String followingUserUUID) {
+  firestore.CollectionReference posts =
+      firestore.FirebaseFirestore.instance.collection('users');
+
+  return posts
+      .doc(followingUserUUID)
+      .update({
+        'followers': firestore.FieldValue.arrayRemove([loggedinUserUUID])
+      })
+      .then((value) => print(
+          "Current logged in user: $loggedinUserUUID removed from user: $followingUserUUID's followers list!"))
+      .catchError((error) => print(
+          "Failed to remove current logged on user from follower's list: $error"));
+}
+
+Future<List> getUsers() async {
+  final _firestore = firestore.FirebaseFirestore.instance;
+
+  List<User> listOfUsers = [];
+
+  var Users = await _firestore.collection('users').get().then((value) => {
+        value.docs.forEach((element) {
+          //create user object with user data
+          final user = User(
+              element['first_name'],
+              element['last_name'],
+              element['bio'],
+              element['uuid'],
+              element['username'],
+              List<String>.from(element['following']),
+              List<String>.from(element['followers']),
+              element['user_profile_picture']);
+
+          //append user to the list of users
+          listOfUsers.add(user);
+        })
+      });
+
+  return listOfUsers;
 }
