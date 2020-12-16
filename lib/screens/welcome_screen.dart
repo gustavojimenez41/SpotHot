@@ -41,7 +41,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFF935252),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -49,36 +49,50 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Hero(
-                  tag: "lightning",
-                  child: Container(
-                    child: Image.asset('images/logo.png'),
-                    height: 60.0,
-                  ),
-                ),
-                Text(
-                  'pot Hot',
-                  style: TextStyle(
-                    fontSize: 45.0,
-                    fontWeight: FontWeight.w900,
-                  ),
+                Column(
+                  children: [
+                    Hero(
+                      tag: "lightning",
+                      child: Container(
+                        child: Image.asset('images/logo.png'),
+                        height: 200.0,
+                      ),
+                    ),
+                    Text(
+                      'Spot Hot',
+                      style: TextStyle(
+                        shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(3.0, 3.0),
+                            blurRadius: 3.0,
+                            color: Colors.black38,
+                          ),
+                        ],
+                        fontFamily: 'BarlowCondensed',
+                        color: Colors.white,
+                        fontSize: 75.0,
+                        fontWeight: FontWeight.w100,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
             SizedBox(
-              height: 48.0,
+              height: 50.0,
             ),
             RoundedButton(
               title: "Log in",
-              color: Colors.lightBlueAccent,
+              color: Color(0xFFFFBE8F),
               onPressed: () {
                 Navigator.pushNamed(context, LoginScreen.id);
               },
             ),
             RoundedButton(
               title: "Register",
-              color: Colors.blueAccent,
+              color: Color(0xFFebaa7b),
               onPressed: () {
                 Navigator.pushNamed(context, RegistrationScreen.id);
               },

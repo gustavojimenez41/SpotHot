@@ -31,30 +31,37 @@ class _ProfileState extends State<Profile> {
     //use the ternary operator if the path exists in firebase serve the image if not use the default profile image.
     print('Users profile url: ${currentUser.userProfilePictureLocation}');
 
-    return Center(
-      child: Container(
-        width: 140.0,
-        height: 140.0,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: FirebaseImage(currentUser.userProfilePictureLocation,
-                shouldCache: false),
-          ),
-          borderRadius: BorderRadius.circular(80.0),
-          border: Border.all(
-            color: Colors.white,
-            width: 8.0,
+    return Column(
+      children: [
+        Divider(
+          height: 10.0,
+        ),
+        Center(
+          child: Container(
+            width: 140.0,
+            height: 140.0,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: FirebaseImage(currentUser.userProfilePictureLocation,
+                    shouldCache: false),
+              ),
+              borderRadius: BorderRadius.circular(80.0),
+              border: Border.all(
+                color: Color(0xFFFFBE8F),
+                width: .75,
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
   Widget _buildFullName(User currentUser) {
     TextStyle _nameTextStyle = TextStyle(
-      fontFamily: 'Roboto',
-      color: Colors.black,
-      fontSize: 28.0,
+      fontFamily: 'BarlowCondensed',
+      color: Colors.white,
+      fontSize: 40.0,
       fontWeight: FontWeight.w700,
     );
     String fname = currentUser.firstName;
@@ -70,14 +77,13 @@ class _ProfileState extends State<Profile> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: Text(
         currentUser.bio,
         style: TextStyle(
           fontFamily: 'Spectral',
-          color: Colors.black,
+          color: Colors.white,
           fontSize: 20.0,
           fontWeight: FontWeight.w300,
         ),
@@ -87,7 +93,7 @@ class _ProfileState extends State<Profile> {
 
   Widget _buildStatItem(String label, String count) {
     TextStyle _statLabelTextStyle = TextStyle(
-      fontFamily: 'Roboto',
+      fontFamily: 'BarlowCondensed',
       color: Colors.black,
       fontSize: 16.0,
       fontWeight: FontWeight.w200,
@@ -118,7 +124,7 @@ class _ProfileState extends State<Profile> {
       height: 60.0,
       margin: EdgeInsets.only(top: 8.0),
       decoration: BoxDecoration(
-        color: Color(0xFFEFF4F7),
+        color: Color(0xFFFFBE8F),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -204,7 +210,10 @@ class _ProfileState extends State<Profile> {
           ),
         );
       },
-      child: Text('Edit Profile'),
+      child: Text(
+        'Edit Profile',
+        style: TextStyle(color: Colors.white),
+      ),
     );
   }
 
@@ -234,7 +243,8 @@ class _ProfileState extends State<Profile> {
                     padding: EdgeInsets.all(10.0),
                     child: Text(
                       "Message",
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600, color: Colors.white),
                     ),
                   ),
                 ),
@@ -255,6 +265,7 @@ class _ProfileState extends State<Profile> {
           if (snapshot.connectionState == ConnectionState.done) {
             currentUser = snapshot.data;
             return Scaffold(
+              backgroundColor: Color(0xFF935252),
               body: Stack(
                 children: [
                   //_buildCoverImage(screenSize),
@@ -292,7 +303,7 @@ class _ProfileState extends State<Profile> {
                   );
                 },
                 child: Icon(Icons.create),
-                backgroundColor: Colors.lightBlueAccent,
+                backgroundColor: Color(0xFFFFBE8F),
               ),
             );
           } else {

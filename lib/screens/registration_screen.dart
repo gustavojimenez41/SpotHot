@@ -50,7 +50,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFF935252),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
@@ -73,6 +73,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               TextField(
                 controller: firstNameField,
+                cursorColor: Color(0xFFFFBE8F),
+                style: TextStyle(color: Colors.white),
                 keyboardType: TextInputType.name,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
@@ -80,13 +82,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   //Do something with the user input.
                 },
                 decoration:
-                    kTextFieldDecoration.copyWith(hintText: "first name"),
+                    kTextFieldDecoration.copyWith(hintText: "First Name"),
               ),
               SizedBox(
                 height: 8.0,
               ),
               TextField(
                 controller: lastNameField,
+                cursorColor: Color(0xFFFFBE8F),
+                style: TextStyle(color: Colors.white),
                 keyboardType: TextInputType.name,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
@@ -94,26 +98,29 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   //Do something with the user input.
                 },
                 decoration:
-                    kTextFieldDecoration.copyWith(hintText: "last name"),
+                    kTextFieldDecoration.copyWith(hintText: "Last Name"),
               ),
               SizedBox(
                 height: 8.0,
               ),
               TextField(
                 controller: userNameField,
+                cursorColor: Color(0xFFFFBE8F),
+                style: TextStyle(color: Colors.white),
                 textAlign: TextAlign.center,
                 onChanged: (value) {
                   userName = value;
                   //Do something with the user input.
                 },
-                decoration:
-                    kTextFieldDecoration.copyWith(hintText: "user name"),
+                decoration: kTextFieldDecoration.copyWith(hintText: "Username"),
               ),
               SizedBox(
                 height: 8.0,
               ),
               TextField(
                 controller: emailField,
+                cursorColor: Color(0xFFFFBE8F),
+                style: TextStyle(color: Colors.white),
                 keyboardType: TextInputType.emailAddress,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
@@ -121,13 +128,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   //Do something with the user input.
                 },
                 decoration:
-                    kTextFieldDecoration.copyWith(hintText: "Enter your email"),
+                    kTextFieldDecoration.copyWith(hintText: "Enter Your Email"),
               ),
               SizedBox(
                 height: 8.0,
               ),
               TextField(
                   controller: passwordField,
+                  cursorColor: Color(0xFFFFBE8F),
+                  style: TextStyle(color: Colors.white),
                   obscureText: true,
                   textAlign: TextAlign.center,
                   onChanged: (value) {
@@ -135,13 +144,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     //Do something with the user input.
                   },
                   decoration: kTextFieldDecoration.copyWith(
-                      hintText: "Enter your password")),
+                      hintText: "Enter Your Password")),
               SizedBox(
                 height: 24.0,
               ),
               RoundedButton(
                 title: "Register",
-                color: Colors.blueAccent,
+                color: Color(0xFFFFBE8F),
                 onPressed: () async {
                   setState(() {
                     showSpinner = true;

@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFF935252),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
@@ -44,6 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               TextField(
                   keyboardType: TextInputType.emailAddress,
+                  cursorColor: Color(0xFFFFBE8F),
+                  style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
                   onChanged: (value) {
                     email = value;
@@ -55,6 +57,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               TextField(
                   obscureText: true,
+                  cursorColor: Color(0xFFFFBE8F),
+                  style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
                   onChanged: (value) {
                     password = value;
@@ -67,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               RoundedButton(
                 title: "Log In",
-                color: Colors.lightBlueAccent,
+                color: Color(0xFFFFBE8F),
                 onPressed: () async {
                   // Navigator.pushNamed(context, SearchNew.id);
                   setState(() {

@@ -15,8 +15,8 @@ class PropertyCard extends StatelessWidget {
         shape: BoxShape.rectangle,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
+            color: Colors.white.withOpacity(0.25),
+            spreadRadius: 8,
             blurRadius: 7,
             offset: Offset(10, 8), // changes position of shadow
           ),
@@ -24,10 +24,12 @@ class PropertyCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(80),
       ),
       child: Card(
+        color: Color(0xFFFFBE8F),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
+              tileColor: Color(0xFFFFBE8F),
               leading: Icon(Icons.my_location),
               title: Text(prop.name),
               subtitle: Text(prop.propertyType.toString()),
@@ -43,7 +45,10 @@ class PropertyCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 TextButton(
-                  child: const Text('MORE INFO'),
+                  child: const Text(
+                    'MORE INFO',
+                    style: TextStyle(color: Colors.black),
+                  ),
                   onPressed: () {
                     Navigator.pushNamed(context, PropertyScreen.id);
                   },

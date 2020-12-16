@@ -81,7 +81,7 @@ class _editProfileState extends State<editProfile> {
       child: Container(
         padding: EdgeInsets.all(20.0),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFF935252),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0),
@@ -94,8 +94,9 @@ class _editProfileState extends State<editProfile> {
               'Edit Profile Picture',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 30.0,
-                color: Colors.lightBlueAccent,
+                fontFamily: 'BarlowCondensed',
+                fontSize: 35.0,
+                color: Colors.white,
               ),
             ),
             Padding(
@@ -146,13 +147,31 @@ class _editProfileState extends State<editProfile> {
               'Edit Bio',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 30.0,
-                color: Colors.lightBlueAccent,
+                fontFamily: 'BarlowCondensed',
+                fontSize: 35.0,
+                color: Colors.white,
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 35.0, right: 35.0),
               child: TextField(
+                style: TextStyle(color: Colors.white),
+                cursorColor: Color(0xFFFFBE8F),
+                decoration: InputDecoration(
+                  border: UnderlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color(0xFFFFBE8F), width: 1.0),
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color(0xFFFFBE8F), width: 2.0),
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                ),
                 autofocus: true,
                 textAlign: TextAlign.center,
                 onChanged: (newText) {
@@ -164,7 +183,7 @@ class _editProfileState extends State<editProfile> {
               padding:
                   const EdgeInsets.only(top: 15.0, right: 75.0, left: 75.0),
               child: FlatButton(
-                  color: Colors.lightBlueAccent,
+                  color: Color(0xFFFFBE8F),
                   textColor: Colors.white,
                   onPressed: () async {
                     //if the user did not choose an image just update the bio.

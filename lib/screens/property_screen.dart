@@ -60,8 +60,8 @@ class _PropertyScreenState extends State<PropertyScreen> {
   @override
   Widget build(BuildContext context) {
     TextStyle _nameTextStyle = TextStyle(
-      fontFamily: 'Roboto',
-      color: Colors.black,
+      fontFamily: 'BarlowCondensed',
+      color: Colors.white,
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
     );
@@ -94,7 +94,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                       return Container(
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
-                          decoration: BoxDecoration(color: Colors.amber),
+                          decoration: BoxDecoration(color: Color(0xFFFFBE8F)),
                           child: Text(
                             'text $i',
                             style: TextStyle(fontSize: 16.0),
@@ -105,13 +105,20 @@ class _PropertyScreenState extends State<PropertyScreen> {
               ),
               Text(
                 'Chamoy Fruit Vendor and Dessert',
+                textAlign: TextAlign.center,
                 style: _nameTextStyle,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Icon(Icons.star),
-                  Text("(4.1/5)"),
+                  Icon(
+                    Icons.star,
+                    color: Colors.white,
+                  ),
+                  Text(
+                    "(4.1/5)",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ],
               ),
               Divider(
@@ -123,7 +130,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
             ];
             columnValues.add(commentToShow);
             return Scaffold(
-              backgroundColor: Colors.white,
+              backgroundColor: Color(0xFF935252),
               body: SafeArea(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,

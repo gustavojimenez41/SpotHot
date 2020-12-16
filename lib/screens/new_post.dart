@@ -27,7 +27,7 @@ class _NewPostState extends State<NewPost> {
       child: Container(
         padding: EdgeInsets.all(20.0),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFF935252),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0),
@@ -40,7 +40,7 @@ class _NewPostState extends State<NewPost> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 OutlineButton(
-                  borderSide: BorderSide(color: Colors.grey),
+                  borderSide: BorderSide(color: Color(0xFFFFBE8F)),
                   onPressed: () async {
                     //get the image from the user's phone and store it in the image variable
                     final _picker = ImagePicker();
@@ -61,7 +61,10 @@ class _NewPostState extends State<NewPost> {
                       }
                     }
                   },
-                  child: Icon(Icons.add_photo_alternate_sharp),
+                  child: Icon(
+                    Icons.add_photo_alternate_sharp,
+                    color: Colors.white,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
@@ -74,7 +77,7 @@ class _NewPostState extends State<NewPost> {
                     child: imageSelected == null
                         ? Icon(
                             Icons.add,
-                            color: Colors.black38,
+                            color: Colors.white,
                             size: 40.0,
                           )
                         : Image.file(imageSelected, height: 40.0, width: 40),
@@ -85,10 +88,20 @@ class _NewPostState extends State<NewPost> {
             Container(
               margin: EdgeInsets.all(8.0),
               child: TextField(
+                style: TextStyle(color: Colors.white),
+                cursorColor: Color(0xFFFFBE8F),
                 maxLines: 10,
                 decoration: InputDecoration(
                   hintText: "What's happening?",
                   border: OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color(0xFFFFBE8F), width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color(0xFFFFBE8F), width: 2.0),
+                  ),
                 ),
                 autofocus: true,
                 onChanged: (newText) {
@@ -99,7 +112,7 @@ class _NewPostState extends State<NewPost> {
             Padding(
               padding: const EdgeInsets.only(top: 5.0, right: 75.0, left: 75.0),
               child: FlatButton(
-                  color: Colors.lightBlueAccent,
+                  color: Color(0xFFFFBE8F),
                   textColor: Colors.white,
                   onPressed: () async {
                     //get the date and the time

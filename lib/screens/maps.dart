@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -33,11 +32,12 @@ class MapSampleState extends State<MapSample> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      drawerScrimColor: Color(0xFFFFBE8F),
       body: GoogleMap(
         initialCameraPosition: yourLocation,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
+        // onMapCreated: (GoogleMapController controller) {
+        //   _controller.complete(controller);
+        // },
       ),
     );
   }

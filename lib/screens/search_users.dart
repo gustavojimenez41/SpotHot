@@ -17,7 +17,9 @@ class _SearchUsersState extends State<SearchUsers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF935252),
       appBar: AppBar(
+        backgroundColor: Color(0xFF935252),
         title: Text("Search Users"),
         actions: <Widget>[
           IconButton(

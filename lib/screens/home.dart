@@ -29,8 +29,9 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF935252),
       appBar: AppBar(
-        leading: null,
+        leading: Container(),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.close),
@@ -40,12 +41,13 @@ class _HomeState extends State<Home> {
               }),
         ],
         title: Text('SpotHot'),
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Color(0xFF935252),
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xFF935252),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
           BottomNavigationBarItem(
@@ -53,7 +55,8 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
               icon: Icon(Icons.person), title: Text('Profile')),
         ],
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Color(0xFFFFBE8F),
+        unselectedItemColor: Colors.white,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
