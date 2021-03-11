@@ -27,13 +27,13 @@ class _SearchedUserProfileState extends State<SearchedUserProfile> {
   String _fullname = "John Doe";
   bool currentlyFollowing;
 
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      currentlyFollowing = checkFollowing();
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   setState(() {
+  //     currentlyFollowing = checkFollowing();
+  //   });
+  // }
 
   bool checkFollowing() {
     //for debugging
